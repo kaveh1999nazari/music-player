@@ -13,4 +13,14 @@ class PlaylistSong extends Model
         'song_id',
         'added_at'
     ];
+
+    public function song(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Song::class);
+    }
+
+    public function playlist(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Playlist::class);
+    }
 }
