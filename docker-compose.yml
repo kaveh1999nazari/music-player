@@ -1,0 +1,38 @@
+services:
+    app:
+        build:
+            context: .
+            dockerfile: docker/MusicPlayer/Dockerfile
+        container_name: music_player_app
+        ports:
+            - "8084:8084"
+        volumes:
+            - .:/app
+        environment:
+            COMPOSER_ALLOW_SUPERUSER: '1'
+        command: ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8084"]
+        depends_on:
+            - music-db
+        networks:
+            - music-network
+
+    music-db:
+        image: postgres:latest
+        restart: always
+        environment:
+            POSTGRES_DB: 'MusicPlayer'
+            POSTGRES_USER: 'root'
+            POSTGRES_PASSWORD: 'root'
+        ports:
+            - '5433:5432'
+        volumes:
+            - pg-data:/var/lib/postgresql/data
+        networks:
+            - music-network
+
+volumes:
+    pg-data:
+
+networks:
+    music-network:
+

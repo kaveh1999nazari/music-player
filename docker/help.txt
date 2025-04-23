@@ -1,0 +1,3 @@
+to show log for schedule use this command:
+
+tail -f /app/storage/logs/schedule-debug.log
