@@ -14,4 +14,5 @@ Route::get('/ping', function () {
 
 Route::controller(UserController::class)->group(function () {
     Route::post('/register', 'create');
+    Route::post('/login', 'login');
 });

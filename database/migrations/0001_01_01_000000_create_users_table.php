@@ -20,6 +20,7 @@ return new class extends Migration
             $table->boolean('is_admin')->default(false);
             $table->string('password');
             $table->timestamp('last_login')->nullable();
+            $table->text('remember_token')->nullable();
             $table->timestamps();
         });
 
