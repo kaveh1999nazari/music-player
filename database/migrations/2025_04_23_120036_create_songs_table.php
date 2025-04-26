@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('artists', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->text('bio');
+            $table->text('bio')->nullable();
             $table->timestamps();
         });
 
@@ -22,17 +22,17 @@ return new class extends Migration
         Schema::create('albums', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->foreignId('artist_id')->constrained('artists')->onDelete('cascade');
-            $table->year('release_year');
+            $table->foreignId('artist_id')->nullable()->constrained('artists')->onDelete('cascade');
+            $table->year('release_year')->nullable();
             $table->timestamps();
         });
 
         Schema::create('songs', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->foreignId('artist_id')->constrained('artists')->onDelete('cascade');
-            $table->foreignId('album_id')->constrained('albums')->onDelete('cascade');
-            $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
+            $table->foreignId('artist_id')->nullable()->constrained('artists')->onDelete('cascade');
+            $table->foreignId('album_id')->nullable()->constrained('albums')->onDelete('cascade');
+            $table->foreignId('category_id')->nullable()->constrained('categories')->onDelete('cascade');
             $table->string('share_token')->nullable();
             $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
             $table->boolean('is_public')->default(true);
