@@ -6,6 +6,7 @@ use App\Exceptions\MediaNotEmpty;
 use App\Models\Song;
 use App\Repository\MediaRepository;
 use App\Repository\SongRepository;
+use App\Traits\AuthenticatesUser;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
 
@@ -13,6 +14,8 @@ use Illuminate\Support\Facades\File;
 
 class SongService
 {
+    use AuthenticatesUser;
+
     public function __construct(
         private readonly SongRepository $songRepository,
         private readonly MediaRepository $mediaRepository
