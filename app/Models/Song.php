@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class Song extends Model
 {
@@ -15,11 +17,32 @@ class Song extends Model
         'category_id',
         'share_token',
         'is_public',
-        'created_by'
+        'created_by',
     ];
 
-    public function category(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    /**
+     * Get the category associated with the song.
+     */
+    public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    /**
+     * Get the media file (audio) associated with the song.
+     */
+    public function media(): MorphOne
+    {
+        return $this->morphOne(Media::class, 'model');
+    }
+
+    /**
+     * Accessor to get the full URL of the audio file.
+     *
+     * @return string|null
+     */
+    public function getAudioUrlAttribute(): ?string
+    {
+        return $this->media?->full_url;
     }
 }

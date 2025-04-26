@@ -47,4 +47,23 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+
+    /**
+     * Get the media (profile image) associated with the user.
+     */
+    public function media(): \Illuminate\Database\Eloquent\Relations\MorphOne
+    {
+        return $this->morphOne(Media::class, 'model');
+    }
+
+    /**
+     * Accessor to get the full URL of the user's profile image.
+     *
+     * @return string|null
+     */
+    public function getImageUrlAttribute(): ?string
+    {
+        return $this->media?->full_url;
+    }
 }
