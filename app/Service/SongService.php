@@ -14,8 +14,6 @@ use Illuminate\Support\Facades\File;
 
 class SongService
 {
-    use AuthenticatesUser;
-
     public function __construct(
         private readonly SongRepository $songRepository,
         private readonly MediaRepository $mediaRepository

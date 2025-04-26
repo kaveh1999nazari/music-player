@@ -3,10 +3,13 @@
 namespace App\Repository;
 
 use App\Models\Song;
+use App\Traits\AuthenticatesUser;
 use Illuminate\Support\Str;
 
 class SongRepository
 {
+    use AuthenticatesUser;
+
     public function create(array $data)
     {
         do {
@@ -18,7 +21,7 @@ class SongRepository
             'artist_id' => $data['artist_id'] ?? null,
             'album_id' => $data['album_id'] ?? null,
             'category_id' => $data['category_id'] ?? null,
-            'created_by' => auth()->id(),
+            'created_by' => $this->getAuthenticatedUserOrFail()->id,
             'share_token' => $shareToken,
         ]);
     }
