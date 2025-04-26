@@ -11,6 +11,8 @@ class Media extends Model
         'file_path',
         'file_type',
         'mime_type',
+        'model_id',
+        'model_type',
     ];
 
     /**
@@ -27,21 +29,5 @@ class Media extends Model
     public function getFullUrlAttribute(): string
     {
         return asset(str_replace('public/', 'storage/', $this->file_path));
-    }
-
-    /**
-     * آیا فایل تصویریه؟
-     */
-    public function isImage(): bool
-    {
-        return str_starts_with($this->mime_type, 'image/');
-    }
-
-    /**
-     * آیا فایل صوتیه؟
-     */
-    public function isAudio(): bool
-    {
-        return str_starts_with($this->mime_type, 'audio/');
     }
 }
