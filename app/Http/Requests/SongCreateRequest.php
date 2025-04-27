@@ -26,7 +26,7 @@ class SongCreateRequest extends FormRequest
             'artist_id' => 'nullable|integer',
             'album_id' => 'nullable|integer',
             'category_id' => 'nullable|integer',
-            'audio' => 'nullable',
+            'audio' => 'required|file|max:102400',
         ];
     }
 }
