@@ -1,0 +1,11 @@
+cd /usr/local/etc/php
+cp php.ini-development php.ini
+nano php.ini
+****************
+change this two :
+upload_max_filesize = 0 -- (unlimited) OR 100M
+post_max_size = 0
+****************
+docker-compose restart
+
+
