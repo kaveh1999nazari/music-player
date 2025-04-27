@@ -16,7 +16,12 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 RUN apt-get install -y supervisor
 RUN apt-get update && apt-get install -y cron
 RUN apt-get update && apt-get install -y nano
+
+# install ffmpeg
 RUN apt-get update && apt install ffmpeg -y
+# Add this to .env after run Docker :
+# FFMPEG_PATH=/usr/bin/ffmpeg
+# FFPROBE_PATH=/usr/bin/ffprobe
 
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
