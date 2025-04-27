@@ -21,7 +21,7 @@ class SongService
 
     public function create(array $data, ?UploadedFile $audio = null): Song
     {
-        if (! $audio) {
+        if (!$audio) {
             throw new MediaNotEmpty();
         }
 
@@ -35,17 +35,14 @@ class SongService
         $song = $this->songRepository->create($data);
 
         $directoryPath = storage_path('app/public/songs');
-
-        if (!File::exists($directoryPath)) {
-            File::makeDirectory($directoryPath, 0755, true);
-        }
+        File::ensureDirectoryExists($directoryPath, 0755, true);
 
         $this->compressAudio($audio, $directoryPath . '/' . $fileName);
 
         $this->mediaRepository->create([
             'file_path' => $relativePath,
             'file_type' => 'audio',
-            'mime_type' => 'audio/mpeg',
+            'mime_type' => $audio->getMimeType(),
             'model_id' => $song->id,
             'model_type' => Song::class,
         ]);
@@ -56,14 +53,16 @@ class SongService
     private function compressAudio(UploadedFile $audio, string $outputPath): void
     {
         $ffmpeg = FFMpeg::create([
-            'ffmpeg.binaries'  => env('FFMPEG_PATH', '/usr/bin/ffmpeg'),
+            'ffmpeg.binaries' => env('FFMPEG_PATH', '/usr/bin/ffmpeg'),
             'ffprobe.binaries' => env('FFPROBE_PATH', '/usr/bin/ffprobe'),
+            'timeout' => 3600
         ]);
 
         $audioFile = $ffmpeg->open($audio->getRealPath());
 
         $format = new Mp3();
         $format->setAudioKiloBitrate(128);
+        $format->setAudioChannels(2);
 
         $audioFile->save($format, $outputPath);
     }
