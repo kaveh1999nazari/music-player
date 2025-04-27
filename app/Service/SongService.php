@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Exceptions\DuplicateMediaException;
 use App\Exceptions\MediaNotEmpty;
 use App\Models\Song;
 use App\Repository\MediaRepository;
@@ -24,6 +25,14 @@ class SongService
         if (! $audio) {
             throw new MediaNotEmpty();
         }
+
+        $fileName = $audio->getClientOriginalName();
+        $relativePath = 'songs/' . $fileName;
+
+        if ($this->mediaRepository->existsDuplicateByName($relativePath)) {
+            throw new DuplicateMediaException();
+        }
+
         $song = $this->songRepository->create($data);
 
         $directoryPath = storage_path('app/public/songs');

@@ -11,4 +11,14 @@ class MediaRepository
         return Media::query()
                 ->create($data);
     }
+
+    /**
+     * Check if a media file with the same file_path (i.e. name) already exists.
+     */
+    public function existsDuplicateByName(string $relativePath): bool
+    {
+        return Media::query()
+            ->where('file_path', $relativePath)
+            ->exists();
+    }
 }
