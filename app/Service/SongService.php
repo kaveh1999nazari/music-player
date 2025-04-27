@@ -6,7 +6,6 @@ use App\Exceptions\MediaNotEmpty;
 use App\Models\Song;
 use App\Repository\MediaRepository;
 use App\Repository\SongRepository;
-use App\Traits\AuthenticatesUser;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
 

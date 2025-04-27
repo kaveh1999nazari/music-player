@@ -17,6 +17,6 @@ Route::controller(UserController::class)->group(function () {
     Route::post('/login', 'login');
 });
 
-Route::middleware('auth:api')->group(function () {
-    Route::post('songs/create', [\App\Http\Controllers\SongController::class, 'create']);
+Route::middleware('user')->group(function () {
+    Route::post('/songs/create', [\App\Http\Controllers\SongController::class, 'create']);
 });
