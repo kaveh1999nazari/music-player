@@ -26,7 +26,7 @@ class SongService
         }
 
         $fileName = $audio->getClientOriginalName();
-        $relativePath = 'songs/' . $fileName;
+        $relativePath = 'songs/' . auth()->id() . '/' . $fileName;
 
         if ($this->mediaRepository->existsDuplicateByName($relativePath)) {
             throw new DuplicateMediaException();
@@ -34,7 +34,7 @@ class SongService
 
         $song = $this->songRepository->create($data);
 
-        $directoryPath = storage_path('app/public/songs');
+        $directoryPath = storage_path('app/public/songs/' . auth()->id());
         File::ensureDirectoryExists($directoryPath, 0755, true);
 
         $this->compressAudio($audio, $directoryPath . '/' . $fileName);
