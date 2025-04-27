@@ -25,8 +25,10 @@ class SongService
             throw new MediaNotEmpty();
         }
 
+        $title = $data['title'];
+
         $fileName = $audio->getClientOriginalName();
-        $relativePath = 'songs/' . auth()->id() . '/' . $fileName;
+        $relativePath = 'songs/' . auth()->id() . '/' . $this->sanitizeTitle($title) . '/' . $fileName;
 
         if ($this->mediaRepository->existsDuplicateByName($relativePath)) {
             throw new DuplicateMediaException();
@@ -34,7 +36,7 @@ class SongService
 
         $song = $this->songRepository->create($data);
 
-        $directoryPath = storage_path('app/public/songs/' . auth()->id());
+        $directoryPath = storage_path('app/public/songs/' . auth()->id() . '/' . $this->sanitizeTitle($title));
         File::ensureDirectoryExists($directoryPath, 0755, true);
 
         $this->compressAudio($audio, $directoryPath . '/' . $fileName);
@@ -65,5 +67,10 @@ class SongService
         $format->setAudioChannels(2);
 
         $audioFile->save($format, $outputPath);
+    }
+
+    private function sanitizeTitle(string $title): string
+    {
+        return preg_replace('/[^a-zA-Z0-9_-]/', '_', $title);
     }
 }
