@@ -10,7 +10,7 @@ class SongRepository
     public function create(array $data)
     {
         do {
-            $shareToken = Str::random(8);
+            $shareToken = Str::random(16);
         } while (Song::query()->where('share_token', $shareToken)->exists());
 
         return Song::query()->create([
@@ -22,4 +22,31 @@ class SongRepository
             'share_token' => $shareToken,
         ]);
     }
+
+    public function existsByTitleForUser(string $title, int $userId): bool
+    {
+        return Song::query()
+            ->where('title', $title)
+            ->where('created_by', $userId)
+            ->exists();
+    }
+
+    public function all(): \Illuminate\Database\Eloquent\Collection
+    {
+        return Song::query()
+            ->where('created_by', auth()->id())
+            ->with(['media'])
+            ->get();
+    }
+
+    public function get(string $shareToken): \Illuminate\Database\Eloquent\Model|null
+    {
+        return Song::query()
+            ->where('created_by', auth()->id())
+            ->where('share_token', $shareToken)
+            ->with(['media'])
+            ->first();
+    }
+
+
 }

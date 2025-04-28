@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SongCreateRequest;
+use App\Http\Requests\SongGetRequest;
 use App\Service\SongService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class SongController extends Controller
@@ -13,13 +15,33 @@ class SongController extends Controller
     )
     {}
 
-    public function create(SongCreateRequest $request): \Illuminate\Http\JsonResponse
+    public function create(SongCreateRequest $request): JsonResponse
     {
         $song = $this->songService->create($request->validated(), $request->file('audio'));
 
         return response()->json([
             'id' => $song->id,
             'code' => 201
+        ]);
+    }
+
+    public function index(): JsonResponse
+    {
+        $songs = $this->songService->all();
+
+        return response()->json([
+            'code' => 201,
+            'data' => $songs,
+        ]);
+    }
+
+    public function get(string $shareToken): JsonResponse
+    {
+        $song = $this->songService->get($shareToken);
+
+        return response()->json([
+            'code' => 201,
+            'data' => $song
         ]);
     }
 }
