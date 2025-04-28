@@ -66,4 +66,11 @@ class SongRepository
         $song->delete();
     }
 
+    public function getById(int $id)
+    {
+        return Song::query()
+            ->where('id', $id)
+            ->first();
+    }
+
 }

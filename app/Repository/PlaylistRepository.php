@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Models\Playlist;
+use App\Models\PlaylistSong;
 use App\Models\Song;
 use Illuminate\Support\Str;
 
@@ -42,5 +43,12 @@ class PlaylistRepository
     public function delete(Playlist $playlist)
     {
         return $playlist->delete();
+    }
+
+    public function checkExist(int $id): bool
+    {
+        return Playlist::query()
+            ->where('id', $id)
+            ->exists();
     }
 }
