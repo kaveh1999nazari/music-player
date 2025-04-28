@@ -3,10 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SongCreateRequest;
-use App\Http\Requests\SongGetRequest;
 use App\Service\SongService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class SongController extends Controller
 {
