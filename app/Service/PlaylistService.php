@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Exceptions\PlaylistNotFoundException;
 use App\Repository\PlaylistRepository;
 
 class PlaylistService
@@ -23,6 +24,19 @@ class PlaylistService
 
     public function get(string $shareToken)
     {
-        return $this->playlistRepository->get($shareToken);
+        $playList = $this->playlistRepository->get($shareToken);
+
+        if(! $playList) {
+            throw new PlaylistNotFoundException();
+        }
+
+        return $playList;
+    }
+
+    public function delete(string $shareToken)
+    {
+        $playList = $this->playlistRepository->get($shareToken);
+
+        return $this->playlistRepository->delete($playList);
     }
 }

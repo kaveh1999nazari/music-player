@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PlaylistCreateRequest;
 use App\Service\PlaylistService;
-use Illuminate\Http\Request;
 
 class PlaylistController extends Controller
 {
@@ -37,6 +36,15 @@ class PlaylistController extends Controller
     {
         return response()->json([
             'data' => $this->playlistService->get($shareToken),
+            'code' => 200
+        ]);
+    }
+
+    public function destroy(string $shareToken)
+    {
+        $playList = $this->playlistService->delete($shareToken);
+        return response()->json([
+            'message' => 'پلی موزیک مورد نظر با موفقیت پاک شد',
             'code' => 200
         ]);
     }

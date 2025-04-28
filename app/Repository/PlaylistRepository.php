@@ -38,4 +38,9 @@ class PlaylistRepository
             ->where('user_id', auth()->id())
             ->first();
     }
+
+    public function delete(Playlist $playlist)
+    {
+        return $playlist->delete();
+    }
 }
