@@ -14,6 +14,8 @@ class PlaylistSong extends Model
         'added_at'
     ];
 
+    public $timestamps = false;
+
     public function song(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Song::class);

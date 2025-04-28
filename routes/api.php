@@ -26,4 +26,5 @@ Route::middleware('user')->group(function () {
     Route::get('/playlists', [\App\Http\Controllers\PlaylistController::class, 'index']);
     Route::get('/playlists/{shareToken}', [\App\Http\Controllers\PlaylistController::class, 'get']);
     Route::delete('/playlists/{shareToken}', [\App\Http\Controllers\PlaylistController::class, 'destroy']);
+    Route::post('/playlists/add-song', [\App\Http\Controllers\PlaylistSongController::class, 'create']);
 });
