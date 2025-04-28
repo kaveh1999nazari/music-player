@@ -81,6 +81,17 @@ class SongService
         return $song;
     }
 
+    public function deleteByShareToken(string $shareToken): void
+    {
+        $song = $this->songRepository->get($shareToken);
+
+        if (!$song) {
+            throw new SongNotFoundException();
+        }
+
+        $this->songRepository->delete($song);
+    }
+
     private function compressAudio(UploadedFile $audio, string $outputPath, int $bitrate): void
     {
         $ffmpeg = FFMpeg::create([

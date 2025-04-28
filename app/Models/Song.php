@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class Song extends Model
@@ -31,9 +32,9 @@ class Song extends Model
     /**
      * Get the media file (audio) associated with the song.
      */
-    public function media(): MorphOne
+    public function media(): HasMany
     {
-        return $this->morphOne(Media::class, 'model');
+        return $this->hasMany(Media::class, 'model_id')->where('model_type', Song::class);
     }
 
     /**

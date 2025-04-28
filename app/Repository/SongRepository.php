@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Models\Song;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class SongRepository
@@ -48,5 +49,19 @@ class SongRepository
             ->first();
     }
 
+    public function delete(Song $song): void
+    {
+        $folderPath = "songs/" . $song->created_by . "/" . $song->title;
+
+        if (Storage::disk('public')->exists($folderPath)) {
+            Storage::disk('public')->deleteDirectory($folderPath);
+        }
+
+        foreach ($song->media as $media) {
+            $media->delete();
+        }
+
+        $song->delete();
+    }
 
 }

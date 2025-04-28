@@ -20,7 +20,7 @@ class SongController extends Controller
         $song = $this->songService->create($request->validated(), $request->file('audio'));
 
         return response()->json([
-            'id' => $song->id,
+            'id' => $song->share_token,
             'code' => 201
         ]);
     }
@@ -42,6 +42,16 @@ class SongController extends Controller
         return response()->json([
             'code' => 201,
             'data' => $song
+        ]);
+    }
+
+    public function destroy(string $shareToken): JsonResponse
+    {
+        $this->songService->deleteByShareToken($shareToken);
+
+        return response()->json([
+            'code' => 200,
+            'message' => 'آهنگ مورد نظر پاک شد'
         ]);
     }
 }
