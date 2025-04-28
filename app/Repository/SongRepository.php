@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Models\Playlist;
 use App\Models\Song;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -12,7 +13,8 @@ class SongRepository
     {
         do {
             $shareToken = Str::random(16);
-        } while (Song::query()->where('share_token', $shareToken)->exists());
+        } while (Song::query()->where('share_token', $shareToken)->exists()
+                && Playlist::query()->where('share_token', $shareToken)->exists());
 
         return Song::query()->create([
             'title' => $data['title'],

@@ -22,4 +22,8 @@ Route::middleware('user')->group(function () {
     Route::get('/songs', [\App\Http\Controllers\SongController::class, 'index']);
     Route::get('/songs/{shareToken}', [\App\Http\Controllers\SongController::class, 'get']);
     Route::delete('/songs/{shareToken}', [\App\Http\Controllers\SongController::class, 'destroy']);
+    Route::post('/playlists/create', [\App\Http\Controllers\PlaylistController::class, 'create']);
+    Route::get('/playlists', [\App\Http\Controllers\PlaylistController::class, 'index']);
+    Route::get('/playlists/{shareToken}', [\App\Http\Controllers\PlaylistController::class, 'get']);
+    Route::delete('/playlists/{shareToken}', [\App\Http\Controllers\PlaylistController::class, 'destroy']);
 });
