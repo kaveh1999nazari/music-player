@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Exceptions\PlaylistNotFoundException;
 use App\Exceptions\PlaylistSongExistException;
 use App\Exceptions\PlaylistSongNotFoundException;
+use App\Exceptions\SongIsNotPublicException;
 use App\Exceptions\SongNotFoundException;
 use App\Repository\PlaylistRepository;
 use App\Repository\PlaylistSongRepository;
@@ -35,6 +36,8 @@ class PlaylistSongService
 
             if (! $song) {
                 throw new SongNotFoundException();
+            } elseif ($song->is_public === false) {
+                throw new SongIsNotPublicException();
             }
 
             return $this->playlistSongRepository->create([
