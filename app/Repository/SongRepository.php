@@ -23,7 +23,7 @@ class SongRepository
             'category_id' => $data['category_id'] ?? null,
             'created_by' => auth()->id(),
             'share_token' => $shareToken,
-            'is_public' => $data['is_public'] ?? null,
+            'is_public' => $data['is_public'] ?? true,
         ]);
     }
 
