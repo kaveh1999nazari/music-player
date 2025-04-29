@@ -19,4 +19,10 @@ class Playlist extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function playlistSongs(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(PlaylistSong::class);
+    }
+
 }
