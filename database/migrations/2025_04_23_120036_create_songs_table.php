@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('artists', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('share_token')->nullable();
             $table->text('bio')->nullable();
             $table->timestamps();
         });
@@ -24,6 +25,7 @@ return new class extends Migration
             $table->string('name');
             $table->foreignId('artist_id')->nullable()->constrained('artists')->onDelete('cascade');
             $table->year('release_year')->nullable();
+            $table->string('share_token')->nullable();
             $table->timestamps();
         });
 
