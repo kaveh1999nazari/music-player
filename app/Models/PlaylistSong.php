@@ -18,7 +18,7 @@ class PlaylistSong extends Model
 
     public function song(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo(Song::class);
+        return $this->belongsTo(Song::class)->with('media');
     }
 
     public function playlist(): \Illuminate\Database\Eloquent\Relations\BelongsTo
