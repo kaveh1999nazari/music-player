@@ -28,4 +28,8 @@ Route::middleware('user')->group(function () {
     Route::delete('/playlist/{shareToken}', [\App\Http\Controllers\PlaylistController::class, 'destroy']);
     Route::post('/playlist/add-track', [\App\Http\Controllers\PlaylistSongController::class, 'create']);
     Route::delete('/playlist/track/{id}', [\App\Http\Controllers\PlaylistSongController::class, 'destroy']);
+    Route::post('/collection/track/create', [\App\Http\Controllers\FavoriteController::class, 'create']);
+    Route::get('/collection/tracks', [\App\Http\Controllers\FavoriteController::class, 'index']);
+    Route::get('/collection/track/{id}', [\App\Http\Controllers\FavoriteController::class, 'get']);
+    Route::delete('/playlist/track/{id}', [\App\Http\Controllers\FavoriteController::class, 'destroy']);
 });
