@@ -35,6 +35,7 @@ class PlaylistRepository
     public function get(string $shareToken)
     {
         return Playlist::query()
+            ->with('playlistSongs')
             ->where('share_token', $shareToken)
             ->where('user_id', auth()->id())
             ->first();
