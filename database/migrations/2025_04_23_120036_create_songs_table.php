@@ -48,9 +48,16 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('album_songs', function (Blueprint $table) {
+        Schema::create('song_albums', function (Blueprint $table) {
             $table->id();
             $table->foreignId('album_id')->constrained('albums')->onDelete('cascade');
+            $table->foreignId('song_id')->constrained('songs')->onDelete('cascade');
+            $table->timestamps();
+        });
+
+        Schema::create('song_artists', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('artist_id')->constrained('artists')->onDelete('cascade');
             $table->foreignId('song_id')->constrained('songs')->onDelete('cascade');
             $table->timestamps();
         });
