@@ -23,4 +23,11 @@ class PlaylistSongRepository
             ->where('song_id', $songId)
             ->first();
     }
+
+    public function delete(int $id)
+    {
+        return PlaylistSong::query()
+            ->where('id', $id)
+            ->delete();
+    }
 }

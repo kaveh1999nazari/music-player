@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Exceptions\PlaylistNotFoundException;
 use App\Exceptions\PlaylistSongExistException;
+use App\Exceptions\PlaylistSongNotFoundException;
 use App\Exceptions\SongNotFoundException;
 use App\Repository\PlaylistRepository;
 use App\Repository\PlaylistSongRepository;
@@ -44,5 +45,16 @@ class PlaylistSongService
         }else {
             throw new PlaylistNotFoundException();
         }
+    }
+
+    public function delete(int $id)
+    {
+        $playlistSong = $this->playlistSongRepository->delete($id);
+
+        if (! $playlistSong) {
+            throw new PlaylistSongNotFoundException();
+        }
+
+        return $playlistSong;
     }
 }

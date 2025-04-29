@@ -22,4 +22,14 @@ class PlaylistSongController extends Controller
             'code' => 201
         ]);
     }
+
+    public function destroy(int $id)
+    {
+        $this->playlistSongService->delete($id);
+
+        return response()->json([
+            'message' => 'باموفقیت از پلی لیست شما حذف شد',
+            'code' => 201
+        ]);
+    }
 }

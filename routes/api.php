@@ -18,13 +18,14 @@ Route::controller(UserController::class)->group(function () {
 });
 
 Route::middleware('user')->group(function () {
-    Route::post('/songs/create', [\App\Http\Controllers\SongController::class, 'create']);
-    Route::get('/songs', [\App\Http\Controllers\SongController::class, 'index']);
-    Route::get('/songs/{shareToken}', [\App\Http\Controllers\SongController::class, 'get']);
-    Route::delete('/songs/{shareToken}', [\App\Http\Controllers\SongController::class, 'destroy']);
+    Route::post('/track/create', [\App\Http\Controllers\SongController::class, 'create']);
+    Route::get('/tracks', [\App\Http\Controllers\SongController::class, 'index']);
+    Route::get('/track/{shareToken}', [\App\Http\Controllers\SongController::class, 'get']);
+    Route::delete('/track/{shareToken}', [\App\Http\Controllers\SongController::class, 'destroy']);
     Route::post('/playlists/create', [\App\Http\Controllers\PlaylistController::class, 'create']);
     Route::get('/playlists', [\App\Http\Controllers\PlaylistController::class, 'index']);
-    Route::get('/playlists/{shareToken}', [\App\Http\Controllers\PlaylistController::class, 'get']);
-    Route::delete('/playlists/{shareToken}', [\App\Http\Controllers\PlaylistController::class, 'destroy']);
-    Route::post('/playlists/add-song', [\App\Http\Controllers\PlaylistSongController::class, 'create']);
+    Route::get('/playlist/{shareToken}', [\App\Http\Controllers\PlaylistController::class, 'get']);
+    Route::delete('/playlist/{shareToken}', [\App\Http\Controllers\PlaylistController::class, 'destroy']);
+    Route::post('/playlist/add-track', [\App\Http\Controllers\PlaylistSongController::class, 'create']);
+    Route::delete('/playlist/track/{id}', [\App\Http\Controllers\PlaylistSongController::class, 'destroy']);
 });
