@@ -31,5 +31,5 @@ Route::middleware('user')->group(function () {
     Route::post('/collection/track/create', [\App\Http\Controllers\FavoriteController::class, 'create']);
     Route::get('/collection/tracks', [\App\Http\Controllers\FavoriteController::class, 'index']);
     Route::get('/collection/track/{id}', [\App\Http\Controllers\FavoriteController::class, 'get']);
-    Route::delete('/playlist/track/{id}', [\App\Http\Controllers\FavoriteController::class, 'destroy']);
+    Route::delete('/collection/track/{id}', [\App\Http\Controllers\FavoriteController::class, 'destroy']);
 });
