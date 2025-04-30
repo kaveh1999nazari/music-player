@@ -29,10 +29,25 @@ class ArtistRepository
             ->exists();
     }
 
-    public function get(int $id)
+    public function getById(int $id)
     {
         return Artist::query()
+            ->with('songArtist')
             ->where('id', $id)
             ->first();
+    }
+
+    public function getByToken(string $shareToken)
+    {
+        return Artist::query()
+            ->with('songArtist')
+            ->where('share_token', $shareToken)
+            ->first();
+    }
+
+    public function all()
+    {
+        return Artist::query()
+            ->get();
     }
 }

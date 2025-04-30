@@ -28,4 +28,26 @@ class CategoryRepository
             ->where('id', $id)
             ->exists();
     }
+
+    public function getByToken(string $shareToken)
+    {
+        return Category::query()
+            ->with('songCategory')
+            ->where('share_token', $shareToken)
+            ->first();
+    }
+
+    public function getById(int $id)
+    {
+        return Category::query()
+            ->with('songCategory')
+            ->where('id', $id)
+            ->first();
+    }
+
+    public function all()
+    {
+        return Category::query()
+            ->get();
+    }
 }

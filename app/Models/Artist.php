@@ -23,6 +23,11 @@ class Artist extends Model
         return $this->morphOne(Media::class, 'model');
     }
 
+    public function songArtist(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(SongArtist::class);
+    }
+
     /**
      * Accessor to get the full URL of the artist's profile image.
      *

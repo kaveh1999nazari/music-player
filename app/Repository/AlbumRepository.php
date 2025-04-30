@@ -30,4 +30,26 @@ class AlbumRepository
             ->where('id', $id)
             ->exists();
     }
+
+    public function getByToken(string $shareToken)
+    {
+        return Album::query()
+            ->with('songAlbum')
+            ->where('share_token', $shareToken)
+            ->first();
+    }
+
+    public function getById(int $id)
+    {
+        return Album::query()
+            ->with('songAlbum')
+            ->where('id', $id)
+            ->first();
+    }
+
+    public function all()
+    {
+        return Album::query()
+            ->get();
+    }
 }

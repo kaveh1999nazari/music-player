@@ -33,6 +33,11 @@ class Album extends Model
         return $this->morphOne(Media::class, 'model');
     }
 
+    public function songAlbum()
+    {
+        return $this->hasMany(SongAlbum::class);
+    }
+
     /**
      * Accessor to get the full URL of the cover image.
      *

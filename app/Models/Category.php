@@ -12,4 +12,9 @@ class Category extends Model
         'name',
         'share_token',
     ];
+
+    public function songCategory(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(SongCategory::class);
+    }
 }
