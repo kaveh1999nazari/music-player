@@ -22,7 +22,7 @@ Route::middleware('user')->group(function () {
     Route::get('/tracks', [\App\Http\Controllers\SongController::class, 'index']);
     Route::get('/track/{shareToken}', [\App\Http\Controllers\SongController::class, 'get']);
     Route::delete('/track/{shareToken}', [\App\Http\Controllers\SongController::class, 'destroy']);
-    Route::post('/playlists/create', [\App\Http\Controllers\PlaylistController::class, 'create']);
+    Route::post('/playlist/create', [\App\Http\Controllers\PlaylistController::class, 'create']);
     Route::get('/playlists', [\App\Http\Controllers\PlaylistController::class, 'index']);
     Route::get('/playlist/{shareToken}', [\App\Http\Controllers\PlaylistController::class, 'get']);
     Route::delete('/playlist/{shareToken}', [\App\Http\Controllers\PlaylistController::class, 'destroy']);
@@ -35,4 +35,6 @@ Route::middleware('user')->group(function () {
     Route::get('/album/{shareToken}', [\App\Http\Controllers\AlbumController::class, 'getByToken']);
     Route::get('/category/{shareToken}', [\App\Http\Controllers\CategoryController::class, 'getByToken']);
     Route::get('/artist/{shareToken}', [\App\Http\Controllers\ArtistController::class, 'getByToken']);
+    Route::get('/users', [\App\Http\Controllers\UserController::class, 'index']);
+    Route::get('/user/{id}', [\App\Http\Controllers\UserController::class, 'get']);
 });
