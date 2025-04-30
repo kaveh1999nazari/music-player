@@ -11,7 +11,7 @@ class SongCategory extends Model
 
     protected $fillable = [
         'song_id',
-        'album_id'
+        'category_id'
     ];
 
     public function song(): BelongsTo
@@ -19,8 +19,8 @@ class SongCategory extends Model
         return $this->belongsTo(Song::class);
     }
 
-    public function album(): BelongsTo
+    public function category(): BelongsTo
     {
-        return $this->belongsTo(Album::class);
+        return $this->belongsTo(Category::class);
     }
 }

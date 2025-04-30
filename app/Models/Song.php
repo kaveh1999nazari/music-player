@@ -13,9 +13,6 @@ class Song extends Model
 
     protected $fillable = [
         'title',
-        'artist_id',
-        'album_id',
-        'category_id',
         'share_token',
         'is_public',
         'created_by',
@@ -27,6 +24,11 @@ class Song extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function artist()
+    {
+        return $this->belongsTo();
     }
 
     /**

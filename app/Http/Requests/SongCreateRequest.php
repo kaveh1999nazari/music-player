@@ -23,11 +23,15 @@ class SongCreateRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:255',
-            'artist_id' => 'nullable|integer',
-            'album_id' => 'nullable|integer',
-            'category_id' => 'nullable|integer',
             'is_public' => 'nullable',
             'audio' => 'required|file|max:102400',
+            'category_id' => 'nullable|integer',
+            'category_name' => 'nullable|string|max:255',
+            'artist_id' => 'nullable|integer',
+            'artist_name' => 'nullable|string|max:255',
+            'album_id' => 'nullable|integer',
+            'album_name' => 'nullable|string|max:255',
+            'release_year' => 'nullable|integer',
         ];
     }
 }

@@ -32,19 +32,16 @@ return new class extends Migration
         Schema::create('songs', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->foreignId('artist_id')->nullable()->constrained('artists')->onDelete('cascade');
-            $table->foreignId('album_id')->nullable()->constrained('albums')->onDelete('cascade');
-            $table->foreignId('category_id')->nullable()->constrained('categories')->onDelete('cascade');
-            $table->string('share_token')->nullable();
             $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
             $table->boolean('is_public')->default(true);
+            $table->string('share_token')->nullable();
             $table->timestamps();
         });
 
         Schema::create('song_categories', function (Blueprint $table) {
             $table->id();
             $table->foreignId('song_id')->constrained('songs')->onDelete('cascade');
-            $table->foreignId('album_id')->constrained('albums')->onDelete('cascade');
+            $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
             $table->timestamps();
         });
 
