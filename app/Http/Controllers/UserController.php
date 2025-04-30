@@ -24,6 +24,22 @@ class UserController extends Controller
         ]);
     }
 
+    public function index()
+    {
+        return response()->json([
+            'data' => $this->userService->all(),
+            'code' => 201
+        ]);
+    }
+
+    public function get(int $id)
+    {
+        return response()->json([
+            'data' => $this->userService->getById($id),
+            'code' => 201
+        ]);
+    }
+
     public function login(UserLoginRequest $request): \Illuminate\Http\JsonResponse
     {
         $token = $this->userService->login($request->validated());

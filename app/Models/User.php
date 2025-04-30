@@ -86,4 +86,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->media?->full_url;
     }
+
+    public function playlists()
+    {
+        return $this->hasMany(Playlist::class);
+    }
 }

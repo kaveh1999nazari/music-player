@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Exceptions\UserExistException;
+use App\Exceptions\UserNotAdminException;
 use App\Exceptions\UserNotFound;
 use App\Exceptions\UserPasswordIncorrect;
 use App\Repository\UserRepository;
@@ -17,11 +18,29 @@ class UserService
 
     public function create(array $data): \App\Models\User
     {
-        $user = $this->userRepository->getByEmail($data['email']);
+        $user = $this->userRepository->get($data['email'], $data['mobile']);
         if ($user) {
             throw new UserExistException();
         }
         return $this->userRepository->create($data);
+    }
+
+    public function all()
+    {
+        if (auth()->user()->is_admin === true) {
+            return $this->userRepository->all();
+        } else {
+            throw new UserNotAdminException();
+        }
+    }
+
+    public function getById(int $id)
+    {
+        if(auth()->user()->is_admin === true) {
+            return $this->userRepository->getById($id);
+        }else {
+            throw new UserNotAdminException();
+        }
     }
 
     public function login(array $data): \Illuminate\Http\JsonResponse
