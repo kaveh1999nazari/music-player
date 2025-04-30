@@ -21,14 +21,19 @@ class Song extends Model
     /**
      * Get the category associated with the song.
      */
-    public function category(): BelongsTo
+    public function category(): HasMany
     {
-        return $this->belongsTo(Category::class);
+        return $this->hasMany(SongCategory::class);
     }
 
     public function artist()
     {
-        return $this->belongsTo();
+        return $this->hasMany(SongArtist::class);
+    }
+
+    public function album()
+    {
+        return $this->hasMany(SongAlbum::class);
     }
 
     /**

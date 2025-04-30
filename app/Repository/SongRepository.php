@@ -45,7 +45,7 @@ class SongRepository
         return Song::query()
             ->where('created_by', auth()->id())
             ->where('share_token', $shareToken)
-            ->with(['media'])
+            ->with(['media', 'album', 'artist', 'category'])
             ->first();
     }
 
