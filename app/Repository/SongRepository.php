@@ -2,26 +2,24 @@
 
 namespace App\Repository;
 
+use App\Models\Album;
+use App\Models\Artist;
 use App\Models\Category;
 use App\Models\Playlist;
 use App\Models\Song;
+use App\Trait\GeneratesUniqueShareToken;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class SongRepository
 {
+    use GeneratesUniqueShareToken;
     public function create(array $data)
     {
-        do {
-            $shareToken = Str::random(16);
-        } while (Song::query()->where('share_token', $shareToken)->exists()
-                && Playlist::query()->where('share_token', $shareToken)->exists()
-                && Category::query()->where('share_token', $shareToken)->exists());
-
         return Song::query()->create([
             'title' => $data['title'],
             'created_by' => auth()->id(),
-            'share_token' => $shareToken,
+            'share_token' => $this->generateUniqueShareToken(),
             'is_public' => $data['is_public'] ?? true,
         ]);
     }

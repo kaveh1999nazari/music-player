@@ -5,23 +5,20 @@ namespace App\Repository;
 use App\Models\Playlist;
 use App\Models\PlaylistSong;
 use App\Models\Song;
+use App\Trait\GeneratesUniqueShareToken;
 use Illuminate\Support\Str;
 
 class PlaylistRepository
 {
+    use GeneratesUniqueShareToken;
     public function create(array $data)
     {
-        do {
-            $shareToken = Str::random(16);
-        } while (Playlist::query()->where('share_token', $shareToken)->exists()
-                && Song::query()->where('share_token', $shareToken)->exists());
-
         return Playlist::query()
             ->create([
                 'user_id' => auth()->id(),
                 'title' => $data['title'],
                 'is_public' => true,
-                'share_token' => $shareToken
+                'share_token' => $this->generateUniqueShareToken()
             ]);
     }
 

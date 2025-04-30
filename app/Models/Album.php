@@ -14,6 +14,7 @@ class Album extends Model
         'name',
         'artist_id',
         'release_year',
+        'share_token'
     ];
 
     /**

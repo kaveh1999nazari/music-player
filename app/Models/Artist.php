@@ -12,6 +12,7 @@ class Artist extends Model
     protected $fillable = [
         'name',
         'bio',
+        'share_token'
     ];
 
     /**

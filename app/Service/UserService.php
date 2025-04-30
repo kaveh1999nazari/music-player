@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Exceptions\UserExistException;
 use App\Exceptions\UserNotFound;
 use App\Exceptions\UserPasswordIncorrect;
 use App\Repository\UserRepository;
@@ -16,6 +17,10 @@ class UserService
 
     public function create(array $data): \App\Models\User
     {
+        $user = $this->userRepository->getByEmail($data['email']);
+        if ($user) {
+            throw new UserExistException();
+        }
         return $this->userRepository->create($data);
     }
 

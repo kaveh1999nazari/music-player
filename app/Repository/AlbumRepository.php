@@ -3,13 +3,25 @@
 namespace App\Repository;
 
 use App\Models\Album;
+use App\Models\Artist;
+use App\Models\Category;
+use App\Models\Playlist;
+use App\Models\Song;
+use App\Trait\GeneratesUniqueShareToken;
+use Illuminate\Support\Str;
 
 class AlbumRepository
 {
+    use GeneratesUniqueShareToken;
     public function create(array $data)
     {
         return Album::query()
-            ->create($data);
+            ->create([
+                'name' => $data['name'],
+                'artist_id' => $data['artist_id'],
+                'release_year' => $data['release_year'] ?? null,
+                'share_token' => $this->generateUniqueShareToken()
+            ]);
     }
 
     public function checkExist(int $id): bool
