@@ -21,6 +21,7 @@ use App\Repository\SongRepository;
 use FFMpeg\FFMpeg;
 use FFMpeg\Format\Audio\Mp3;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 
 class SongService
@@ -42,103 +43,106 @@ class SongService
             throw new MediaNotEmpty();
         }
 
-        $title = $data['title'];
+        return DB::transaction(function () use ($data, $audio) {
+            $title = $data['title'];
 
-        $baseRelativePath = 'songs/' . auth()->id() . '/' . $this->sanitizeTitle($title);
-        $fileName = pathinfo($audio->getClientOriginalName(), PATHINFO_FILENAME);
-        $extension = $audio->getClientOriginalExtension();
+            $baseRelativePath = 'songs/' . auth()->id() . '/' . $this->sanitizeTitle($title);
+            $fileName = pathinfo($audio->getClientOriginalName(), PATHINFO_FILENAME);
+            $extension = $audio->getClientOriginalExtension();
 
-        if ($this->mediaRepository->existsDuplicateByName($baseRelativePath . '/' . $fileName . '_320.' . $extension)) {
-            throw new DuplicateMediaException();
-        }
+            if ($this->mediaRepository->existsDuplicateByName($baseRelativePath . '/' . $fileName . '_320.' . $extension)) {
+                throw new DuplicateMediaException();
+            }
 
-        if ($this->songRepository->existsByTitleForUser($data['title'], auth()->id())) {
-            throw new DuplicateTitleSongException();
-        }
+            if ($this->songRepository->existsByTitleForUser($data['title'], auth()->id())) {
+                throw new DuplicateTitleSongException();
+            }
 
-        $song = $this->songRepository->create($data);
+            $song = $this->songRepository->create($data);
 
-        if (isset($data['category_id'])) {
-            if ($this->categoryRepository->checkExist($data['category_id']) === true) {
+            if (isset($data['category_id'])) {
+                if ($this->categoryRepository->checkExist($data['category_id'])) {
+                    $this->songCategoryRepository->create([
+                        'category_id' => $data['category_id'],
+                        'song_id' => $song->id
+                    ]);
+                } else {
+                    throw new CategoryNotExistException();
+                }
+            }
+
+            if (isset($data['category_name'])) {
+                $category = $this->categoryRepository->create(['name' => $data['category_name']]);
                 $this->songCategoryRepository->create([
-                    'category_id' => $data['category_id'],
+                    'category_id' => $category->id,
                     'song_id' => $song->id
                 ]);
-            } else {
-                throw new CategoryNotExistException();
             }
-        }
-        if (isset($data['category_name'])) {
-            $category = $this->categoryRepository->create([
-                'name' => $data['category_name']
-            ]);
 
-            $this->songCategoryRepository->create([
-                'category_id' => $category->id,
-                'song_id' => $song->id
-            ]);
-        }
-        if (isset($data['artist_id'])) {
-            if ($this->artistRepository->checkExist($data['artist_id']) === true) {
+            if (isset($data['artist_id'])) {
+                if ($this->artistRepository->checkExist($data['artist_id'])) {
+                    $this->songArtistRepository->create([
+                        'song_id' => $song->id,
+                        'artist_id' => $data['artist_id']
+                    ]);
+                } else {
+                    throw new ArtistNotExistException();
+                }
+            }
+
+            if (isset($data['artist_name'])) {
+                $artist = $this->artistRepository->create(['name' => $data['artist_name']]);
                 $this->songArtistRepository->create([
                     'song_id' => $song->id,
-                    'artist_id' => $data['artist_id']
+                    'artist_id' => $artist->id
                 ]);
-            } else {
-                throw new ArtistNotExistException();
             }
-        }
-        if (isset($data['artist_name'])) {
-            $artist = $this->artistRepository->create(['name' => $data['artist_name']]);
 
-            $this->songArtistRepository->create([
-                'song_id' => $song->id,
-                'artist_id' => $artist->id
-            ]);
-        }
-        if (isset($data['album_id'])) {
-            if ($this->albumRepository->checkExist($data['album_id']) === true) {
+            if (isset($data['album_id'])) {
+                if ($this->albumRepository->checkExist($data['album_id'])) {
+                    $this->songAlbumRepository->create([
+                        'song_id' => $song->id,
+                        'album_id' => $data['album_id']
+                    ]);
+                } else {
+                    throw new AlbumNotExistException();
+                }
+            }
+
+            if (isset($data['album_name'])) {
+                $album = $this->albumRepository->create([
+                    'name' => $data['album_name'],
+                    'artist_id' => $data['artist_id'] ?? $artist->id ?? null,
+                    'release_year' => $data['release_year']
+                ]);
+
                 $this->songAlbumRepository->create([
                     'song_id' => $song->id,
-                    'album_id' => $data['album_id']
+                    'album_id' => $album->id
                 ]);
-            } else {
-                throw new AlbumNotExistException();
             }
-        }
-        if (isset($data['album_name'])) {
-            $album = $this->albumRepository->create([
-                'name' => $data['album_name'],
-                'artist_id' => $data['artist_id'] ?? $artist->id,
-                'release_year' => $data['release_year']
-            ]);
 
-            $this->songAlbumRepository->create([
-                'song_id' => $song->id,
-                'album_id' => $album->id
-            ]);
-        }
+            $directoryPath = storage_path('app/public/' . $baseRelativePath);
+            File::ensureDirectoryExists($directoryPath, 0755, true);
 
-        $directoryPath = storage_path('app/public/' . $baseRelativePath);
-        File::ensureDirectoryExists($directoryPath, 0755, true);
+            foreach ([320, 196, 128, 96] as $kbps) {
+                $outputPath = $directoryPath . '/' . $fileName . "_{$kbps}." . $extension;
+                $relativeFilePath = $baseRelativePath . '/' . $fileName . "_{$kbps}." . $extension;
 
-        foreach ([320, 196, 128, 96] as $kbps) {
-            $outputPath = $directoryPath . '/' . $fileName . "_{$kbps}." . $extension;
-            $relativeFilePath = $baseRelativePath . '/' . $fileName . "_{$kbps}." . $extension;
+                $this->compressAudio($audio, $outputPath, $kbps);
 
-            $this->compressAudio($audio, $outputPath, $kbps);
+                $this->mediaRepository->create([
+                    'file_path' => $relativeFilePath,
+                    'file_type' => 'audio',
+                    'mime_type' => $audio->getMimeType(),
+                    'model_id' => $song->id,
+                    'model_type' => Song::class,
+                    'quality' => $kbps,
+                ]);
+            }
 
-            $this->mediaRepository->create([
-                'file_path' => $relativeFilePath,
-                'file_type' => 'audio',
-                'mime_type' => $audio->getMimeType(),
-                'model_id' => $song->id,
-                'model_type' => Song::class,
-                'quality' => $kbps,
-            ]);
-        }
-
-        return $song;
+            return $song;
+        });
     }
 
     public function all()
