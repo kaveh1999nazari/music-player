@@ -12,12 +12,25 @@ class UserRepository
     {
         return User::query()
             ->create([
-            'first_name' => $data['first_name'],
-            'last_name' => $data['last_name'],
+            'first_name' => $data['first_name'] ?? null,
+            'last_name' => $data['last_name'] ?? null,
             'email' => $data['email'],
-            'mobile' => $data['mobile'],
-            'password' => Hash::make($data['password']),
+            'mobile' => $data['mobile'] ?? null,
+            'password' => Hash::make($data['password']) ?? null,
         ]);
+    }
+
+    public function createOtp(int $id)
+    {
+        User::query()
+            ->where('id', $id)
+            ->update([
+                'otp_code' => rand(100000, 999999),
+                'otp_expired' => now()->addMinutes(3),
+                'updated_at' => now()
+            ]);
+
+        return User::query()->find($id);
     }
 
     public function get(string $email, string $mobile)

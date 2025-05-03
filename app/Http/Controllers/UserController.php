@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserConfirmOtpRequest;
 use App\Http\Requests\UserCreateRequest;
 use App\Http\Requests\UserLoginRequest;
+use App\Http\Requests\UserRequestOtpRequest;
+use App\Http\Requests\UserUpdatePasswordRequest;
 use App\Service\UserService;
-use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
@@ -40,12 +42,42 @@ class UserController extends Controller
         ]);
     }
 
+    public function updatePassword(UserUpdatePasswordRequest $request)
+    {
+        $user = $this->userService->updatePassword($request->validated());
+
+        return response()->json([
+            'message' => 'با موفقیت رمز شما تغییر یافت',
+            'code' => 201
+        ]);
+    }
+
     public function login(UserLoginRequest $request): \Illuminate\Http\JsonResponse
     {
         $token = $this->userService->login($request->validated());
 
         return response()->json([
             'token' => $token,
+        ]);
+    }
+
+    public function requestOtp(UserRequestOtpRequest $request): \Illuminate\Http\JsonResponse
+    {
+        $user = $this->userService->requestOtp($request->validated());
+
+        return response()->json([
+            'otp_code' => $user->otp_code,
+            'code' => 201
+        ]);
+    }
+
+    public function confirmOtp(UserConfirmOtpRequest $request)
+    {
+        $token = $this->userService->confirmOtp($request->validated());
+
+        return response()->json([
+            'token' => $token,
+            'code' => 200
         ]);
     }
 }
