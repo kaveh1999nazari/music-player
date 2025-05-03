@@ -20,7 +20,6 @@ class UserAuthMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         try {
-            // اینجا تلاش می‌کنیم توکن رو چک کنیم
             $user = JWTAuth::parseToken()->authenticate();
 
             if (! $user) {
