@@ -15,6 +15,9 @@ Route::get('/ping', function () {
 Route::controller(UserController::class)->group(function () {
     Route::post('/register', 'create');
     Route::post('/login', 'login');
+    Route::post('/request-otp', 'requestOtp');
+    Route::post('/confirm-otp', 'confirmOtp');
+    Route::post('/user/change-password', 'updatePassword');
 });
 
 Route::middleware('user')->group(function () {
