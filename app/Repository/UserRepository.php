@@ -63,6 +63,13 @@ class UserRepository
             ->first();
     }
 
+    public function getByRefreshToken(string $refreshToken)
+    {
+        return User::query()
+            ->where('refresh_token', $refreshToken)
+            ->first();
+    }
+
     public function all()
     {
         return User::query()

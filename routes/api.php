@@ -18,6 +18,8 @@ Route::controller(UserController::class)->group(function () {
     Route::post('/request-otp', 'requestOtp');
     Route::post('/confirm-otp', 'confirmOtp');
     Route::post('/user/change-password', 'updatePassword');
+    Route::post('/refresh-token', 'refresh');
+
 });
 
 Route::middleware('user')->group(function () {

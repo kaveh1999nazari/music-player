@@ -20,7 +20,8 @@ return new class extends Migration
             $table->boolean('is_admin')->default(false);
             $table->string('password')->nullable();
             $table->timestamp('last_login')->nullable();
-            $table->text('remember_token')->nullable();
+            $table->text('access_token')->nullable();
+            $table->text('refresh_token')->nullable();
             $table->string('otp_code')->nullable();
             $table->timestamp('otp_expired')->nullable();
             $table->timestamps();

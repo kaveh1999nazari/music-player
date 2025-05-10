@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\UserExistException;
+use App\Exceptions\UserNotAdminException;
+use App\Exceptions\UserNotFound;
+use App\Exceptions\UserPasswordIncorrect;
 use App\Http\Requests\UserConfirmOtpRequest;
 use App\Http\Requests\UserCreateRequest;
 use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\UserRequestOtpRequest;
 use App\Http\Requests\UserUpdatePasswordRequest;
 use App\Service\UserService;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
@@ -16,6 +21,9 @@ class UserController extends Controller
     )
     {}
 
+    /**
+     * @throws UserExistException
+     */
     public function create(UserCreateRequest $request): \Illuminate\Http\JsonResponse
     {
         $user = $this->userService->create($request->validated());
@@ -26,6 +34,9 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * @throws UserNotAdminException
+     */
     public function index()
     {
         return response()->json([
@@ -34,7 +45,10 @@ class UserController extends Controller
         ]);
     }
 
-    public function get(int $id)
+    /**
+     * @throws UserNotAdminException
+     */
+    public function get(int $id): \Illuminate\Http\JsonResponse
     {
         return response()->json([
             'data' => $this->userService->getById($id),
@@ -42,7 +56,10 @@ class UserController extends Controller
         ]);
     }
 
-    public function updatePassword(UserUpdatePasswordRequest $request)
+    /**
+     * @throws UserNotFound
+     */
+    public function updatePassword(UserUpdatePasswordRequest $request): \Illuminate\Http\JsonResponse
     {
         $user = $this->userService->updatePassword($request->validated());
 
@@ -52,6 +69,10 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * @throws UserNotFound
+     * @throws UserPasswordIncorrect
+     */
     public function login(UserLoginRequest $request): \Illuminate\Http\JsonResponse
     {
         $token = $this->userService->login($request->validated());
@@ -71,6 +92,10 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * @throws UserNotFound
+     * @throws UserPasswordIncorrect
+     */
     public function confirmOtp(UserConfirmOtpRequest $request)
     {
         $token = $this->userService->confirmOtp($request->validated());
@@ -80,4 +105,13 @@ class UserController extends Controller
             'code' => 200
         ]);
     }
+
+    /**
+     * @throws \Exception
+     */
+    public function refresh(Request $request): \Illuminate\Http\JsonResponse
+    {
+        return $this->userService->refreshToken($request->input('refresh_token'));
+    }
+
 }

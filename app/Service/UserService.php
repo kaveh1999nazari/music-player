@@ -7,6 +7,7 @@ use App\Exceptions\UserNotAdminException;
 use App\Exceptions\UserNotFound;
 use App\Exceptions\UserPasswordIncorrect;
 use App\Http\Requests\UserRequestOtpRequest;
+use App\Models\User;
 use App\Repository\UserRepository;
 use Illuminate\Support\Facades\Hash;
 use Psy\Util\Str;
@@ -57,12 +58,15 @@ class UserService
             $token = auth()->login($user);
         }
 
+        $refreshToken = \Illuminate\Support\Str::random(60);
+
         $this->userRepository->update([
             'last_login' => now(),
-            'remember_token' => $token,
-            ], $user);
+            'access_token' => $token,
+            'refresh_token' => $refreshToken,
+        ], $user);
 
-        return $this->respondWithToken($token);
+        return $this->respondWithToken($token, $refreshToken);
     }
 
     public function updatePassword(array $data)
@@ -105,22 +109,44 @@ class UserService
             && $user->otp_expired > now()
         ) {
             $token = auth('api')->login($user);
+            $refreshToken = \Illuminate\Support\Str::random(60);
 
             $this->userRepository->update([
                 'last_login' => now(),
-                'remember_token' => $token,
+                'access_token' => $token,
+                'refresh_token' => $refreshToken,
             ], $user);
         } else {
             throw new UserPasswordIncorrect();
         }
 
-        return $this->respondWithToken($token);
+        return $this->respondWithToken($token, $refreshToken);
     }
 
-    protected function respondWithToken($token): \Illuminate\Http\JsonResponse
+    public function refreshToken(string $refreshToken): \Illuminate\Http\JsonResponse
+    {
+        $user = $this->userRepository->getByRefreshToken($refreshToken);
+
+        if (! $user) {
+            throw new \Exception('Invalid refresh token');
+        }
+
+        $token = auth()->login($user);
+        $newRefreshToken = \Illuminate\Support\Str::random(60);
+
+        $this->userRepository->update([
+            'access_token' => $token,
+            'refresh_token' => $newRefreshToken,
+        ], $user);
+
+        return $this->respondWithToken($token, $newRefreshToken);
+    }
+
+    protected function respondWithToken($token, $refreshToken): \Illuminate\Http\JsonResponse
     {
         return response()->json([
             'access_token' => $token,
+            'refresh_token' => $refreshToken,
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60
         ]);
