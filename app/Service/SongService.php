@@ -73,7 +73,7 @@ class SongService
             }
 
             if (isset($data['category_name'])) {
-                if ($this->categoryRepository->checkExistByName($data['category_name'])) {
+                if ($this->categoryRepository->checkExistByName($data['category_name']) === false) {
                     $category = $this->categoryRepository->create(['name' => $data['category_name']]);
                     $this->songCategoryRepository->create([
                         'category_id' => $category->id,
