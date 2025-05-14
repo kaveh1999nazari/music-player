@@ -22,10 +22,17 @@ class CategoryRepository
                 'share_token' => $this->generateUniqueShareToken()
             ]);
     }
-    public function checkExist(int $id): bool
+    public function checkExistById(int $id): bool
     {
         return Category::query()
             ->where('id', $id)
+            ->exists();
+    }
+
+    public function checkExistByName(string $name): bool
+    {
+        return Category::query()
+            ->where('name', $name)
             ->exists();
     }
 

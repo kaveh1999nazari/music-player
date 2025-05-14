@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Exceptions\AlbumNotExistException;
 use App\Exceptions\ArtistNotExistException;
+use App\Exceptions\CategoryExistException;
 use App\Exceptions\CategoryNotExistException;
 use App\Exceptions\DuplicateMediaException;
 use App\Exceptions\DuplicateTitleSongException;
@@ -61,7 +62,7 @@ class SongService
             $song = $this->songRepository->create($data);
 
             if (isset($data['category_id'])) {
-                if ($this->categoryRepository->checkExist($data['category_id'])) {
+                if ($this->categoryRepository->checkExistById($data['category_id'])) {
                     $this->songCategoryRepository->create([
                         'category_id' => $data['category_id'],
                         'song_id' => $song->id
@@ -72,11 +73,16 @@ class SongService
             }
 
             if (isset($data['category_name'])) {
-                $category = $this->categoryRepository->create(['name' => $data['category_name']]);
-                $this->songCategoryRepository->create([
-                    'category_id' => $category->id,
-                    'song_id' => $song->id
-                ]);
+                if ($this->categoryRepository->checkExistByName($data['category_name'])) {
+                    $category = $this->categoryRepository->create(['name' => $data['category_name']]);
+                    $this->songCategoryRepository->create([
+                        'category_id' => $category->id,
+                        'song_id' => $song->id
+                    ]);
+                } else {
+                    throw new CategoryExistException();
+                }
+
             }
 
             if (isset($data['artist_id'])) {
