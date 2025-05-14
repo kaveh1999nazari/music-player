@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Exceptions\InvalidUserToken;
 use App\Exceptions\UserExistException;
 use App\Exceptions\UserNotAdminException;
 use App\Exceptions\UserNotFound;
@@ -128,7 +129,7 @@ class UserService
         $user = $this->userRepository->getByRefreshToken($refreshToken);
 
         if (! $user) {
-            throw new \Exception('Invalid refresh token');
+            throw new InvalidUserToken();
         }
 
         $token = auth()->login($user);
