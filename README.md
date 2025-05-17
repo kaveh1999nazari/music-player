@@ -84,4 +84,9 @@ FFMPEG_PATH=/usr/bin/ffmpeg
 FFPROBE_PATH=/usr/bin/ffprobe
 ```
 
+after that use this command to make tables:
+```bash
+php artisan migrate
+```
+
 
