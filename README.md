@@ -35,4 +35,53 @@ The API supports a **multi-model search** functionality, which allows users to s
 - Album titles
 - Custom album titles
 
-Search results include all relevant entities matching the query. Example endpoint:
+Search results include all relevant entities matching the query.
+
+---
+
+## 🚀 How to Run the Project
+
+To run the project locally using Docker, follow these steps:
+
+### 1. Install PHP and Composer
+
+Make sure you have **PHP** and **Composer** installed on your machine.
+
+You can verify this by running:
+
+```bash
+php -v
+composer -V
+```
+
+### 2. Install Dependencies
+Once you're sure PHP and Composer are installed, navigate to the project directory and run:
+
+```bash
+composer install
+```
+
+This will install all PHP dependencies for the project.
+
+### 3. Build and Run Docker Containers
+
+```bash
+docker compose up -d --build
+```
+This will build the image and run the application in the background.
+
+
+### 🛠️ Environment Variables
+
+Don't forget to set your .env file appropriately. After copying .env.example to .env, you can run:
+
+```bash
+php artisan key:generate
+```
+you will see in .env this :
+```bash
+FFMPEG_PATH=/usr/bin/ffmpeg
+FFPROBE_PATH=/usr/bin/ffprobe
+```
+
+
