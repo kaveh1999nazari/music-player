@@ -37,6 +37,9 @@ RUN composer install
 COPY /docker/bootstrap/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
+RUN echo "upload_max_filesize=20M" >> /usr/local/etc/php/php.ini
+RUN echo "post_max_size=25M" >> /usr/local/etc/php/php.ini
+
 ENTRYPOINT ["/entrypoint.sh"]
 
 #CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8084"]
