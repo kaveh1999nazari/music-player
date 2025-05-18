@@ -32,4 +32,5 @@ Route::middleware('user')->group(function () {
     Route::get('/artist/{shareToken}', [\App\Http\Controllers\ArtistController::class, 'getByToken']);
     Route::get('/users', [\App\Http\Controllers\UserController::class, 'index']);
     Route::get('/user/{id}', [\App\Http\Controllers\UserController::class, 'get']);
+    Route::get('/search', [\App\Http\Controllers\SearchController::class, 'search']);
 });

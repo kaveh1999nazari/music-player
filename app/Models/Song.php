@@ -26,9 +26,14 @@ class Song extends Model
         return $this->hasMany(SongCategory::class);
     }
 
-    public function artist()
+    public function artist(): HasMany
     {
         return $this->hasMany(SongArtist::class);
+    }
+
+    public function artists(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Artist::class, 'song_artists', 'song_id', 'artist_id');
     }
 
     public function album()

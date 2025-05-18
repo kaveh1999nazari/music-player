@@ -28,6 +28,11 @@ class Artist extends Model
         return $this->hasMany(SongArtist::class);
     }
 
+    public function songs(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Song::class, 'song_artists', 'artist_id', 'song_id');
+    }
+
     /**
      * Accessor to get the full URL of the artist's profile image.
      *
