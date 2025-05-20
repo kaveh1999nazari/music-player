@@ -38,6 +38,13 @@ class PlaylistRepository
             ->first();
     }
 
+    public function getById(int $id)
+    {
+        return Playlist::query()
+            ->where('id', $id)
+            ->first();
+    }
+
     public function delete(Playlist $playlist)
     {
         return $playlist->delete();
