@@ -19,8 +19,7 @@ class User extends Authenticatable implements JWTSubject
      * @var list<string>
      */
     protected $fillable = [
-        'first_name',
-        'last_name',
+        'full_name',
         'email',
         'mobile',
         'password',
@@ -28,6 +27,7 @@ class User extends Authenticatable implements JWTSubject
         'last_login',
         'otp_code',
         'otp_expired',
+        'photo'
     ];
 
     /**
@@ -94,4 +94,10 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Playlist::class);
     }
+
+    public function providers(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(UserProvider::class);
+    }
+
 }

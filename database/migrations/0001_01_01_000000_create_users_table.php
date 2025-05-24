@@ -13,8 +13,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('first_name')->nullable();
-            $table->string('last_name')->nullable();
+            $table->string('full_name')->nullable();
             $table->string('email')->unique();
             $table->string('mobile')->unique()->nullable();
             $table->boolean('is_admin')->default(false);
@@ -24,6 +23,15 @@ return new class extends Migration
             $table->text('refresh_token')->nullable();
             $table->string('otp_code')->nullable();
             $table->timestamp('otp_expired')->nullable();
+            $table->string('photo')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('user_providers', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('provider');
+            $table->string('provider_id');
             $table->timestamps();
         });
 
@@ -49,6 +57,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('users');
+        Schema::dropIfExists('user_providers');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
     }
