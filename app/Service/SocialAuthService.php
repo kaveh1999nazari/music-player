@@ -32,11 +32,12 @@ class SocialAuthService
 
             if (!$user) {
                 $user = $this->userRepository->create([
-                    'first_name' => $socialUser->getName(),
+                    'full_name' => $socialUser->getName(),
                     'email' => $socialUser->getEmail(),
                     'photo' => $socialUser->getAvatar(),
                     'password' => Str::random(32),
                 ]);
+
             }else {
                 throw new UserExistException();
             }
@@ -50,11 +51,18 @@ class SocialAuthService
             $user = $this->userRepository->getByEmail($socialUser->getEmail());
         }
 
+        $token = Auth::login($user);
+        $refreshToken = \Illuminate\Support\Str::random(60);
+
         $this->userRepository->update([
-            'access_token' => Auth::login($user),
-            'refresh_token' =>  \Illuminate\Support\Str::random(60)
+            'access_token' => $token,
+            'refresh_token' => $refreshToken
         ], $user);
 
-        return $user;
+        return [
+            'user' => $user,
+            'access_token' => $token,
+            'refresh_token' => $refreshToken,
+        ];
     }
 }

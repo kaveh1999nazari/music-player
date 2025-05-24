@@ -18,9 +18,13 @@ class SocialAuthController extends Controller
 
     public function callback(string $provider)
     {
-        $user = $this->socialAuthService->callback($provider);
+        $result = $this->socialAuthService->callback($provider);
 
-         return response()->json(['token' => $user->access_token]);
+         return [
+             'user' => $result['user'],
+             'access_token' => $result['access_token'],
+             'refresh_token' => $result['refresh_token'],
+         ];
 
     }
 }
