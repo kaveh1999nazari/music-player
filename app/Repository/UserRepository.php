@@ -12,10 +12,10 @@ class UserRepository
     {
         return User::query()
             ->create([
-            'first_name' => $data['first_name'] ?? null,
-            'last_name' => $data['last_name'] ?? null,
+            'full_name' => $data['full_name'] ?? null,
             'email' => $data['email'],
             'mobile' => $data['mobile'] ?? null,
+            'photo' => $data['photo'] ?? null,
             'password' => Hash::make($data['password']) ?? null,
         ]);
     }
