@@ -45,4 +45,6 @@ Route::middleware('user')->group(function () {
     Route::post('/playlist/follow', [\App\Http\Controllers\PlaylistFollowController::class, 'store']);
     Route::get('/playlists/follow', [\App\Http\Controllers\PlaylistFollowController::class, 'index']);
     Route::delete('/playlist/follow/{id}', [\App\Http\Controllers\PlaylistFollowController::class, 'destroy']);
+    Route::post('/history', [\App\Http\Controllers\UserHistoryController::class, 'store']);
+    Route::get('/history/recent', [\App\Http\Controllers\UserHistoryController::class, 'recent']);
 });
