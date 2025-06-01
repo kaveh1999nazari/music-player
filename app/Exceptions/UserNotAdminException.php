@@ -9,7 +9,7 @@ class UserNotAdminException extends Exception
     public function render()
     {
         return response()->json([
-            'message' => 'فقط ادمین دسترسی به این قسمت دارد',
+            'message' => 'Only admins have access to this section',
             'code' => 406
         ]);
     }

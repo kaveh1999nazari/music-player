@@ -9,7 +9,7 @@ class UserExistException extends Exception
     public function render()
     {
         return response()->json([
-            'message' => 'کاربر ثبت نام کرده است',
+            'message' => 'User has been registered',
             'code' => 406
         ]);
     }

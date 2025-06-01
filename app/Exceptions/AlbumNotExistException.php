@@ -9,7 +9,7 @@ class AlbumNotExistException extends Exception
     public function render()
     {
         return response()->json([
-            'message' => 'آلبوم مورد نظر پیدا نشد',
+            'message' => 'Album not found',
             'code' => 404
         ]);
     }

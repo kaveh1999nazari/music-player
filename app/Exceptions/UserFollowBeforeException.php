@@ -9,7 +9,7 @@ class UserFollowBeforeException extends Exception
     public function render()
     {
         return response()->json([
-            'message' => 'شما این کاربر را قبلا دنبال کرده اید',
+            'message' => 'You have already followed this user',
             'code' => 406
     ]);
     }

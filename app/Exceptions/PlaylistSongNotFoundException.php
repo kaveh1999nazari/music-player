@@ -9,7 +9,7 @@ class PlaylistSongNotFoundException extends Exception
     public function render(): \Illuminate\Http\JsonResponse
     {
         return response()->json([
-            'message' => "آهنگ مورد نظر شمادر این پلی لیست یافت نشد",
+            'message' => "The song you are looking for was not found in this playlist",
             'code' => 404,
         ]);
     }

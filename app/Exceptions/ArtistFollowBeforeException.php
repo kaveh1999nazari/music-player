@@ -9,7 +9,7 @@ class ArtistFollowBeforeException extends Exception
     public function render()
     {
         return response()->json([
-            'message' => 'شما این هنرمند را قبلا دنبال کرده اید',
+            'message' => 'You have already followed this artist',
             'code' => 406
         ]);
     }

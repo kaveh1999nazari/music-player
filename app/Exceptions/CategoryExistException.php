@@ -9,7 +9,7 @@ class CategoryExistException extends Exception
     public function render()
     {
         return response()->json([
-            'message' => 'دسته انتخاب شده قبلا ایجاد شده است',
+            'message' => 'The category you selected already exists',
             'code' => 406
         ]);
     }

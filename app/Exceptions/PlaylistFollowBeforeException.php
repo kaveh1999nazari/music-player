@@ -9,7 +9,7 @@ class PlaylistFollowBeforeException extends Exception
     public function render()
     {
         return response()->json([
-            'message' => 'شما این پلی لیست را قبلا دنبال کرده اید',
+            'message' => 'You have already followed this playlist',
             'code' => 406
         ]);
     }

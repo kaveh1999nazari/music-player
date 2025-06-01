@@ -44,7 +44,7 @@ class PlaylistController extends Controller
     {
         $playList = $this->playlistService->delete($shareToken);
         return response()->json([
-            'message' => 'پلی موزیک مورد نظر با موفقیت پاک شد',
+            'message' => 'The playlist has been deleted successfully',
             'code' => 200
         ]);
     }

@@ -9,7 +9,7 @@ class UserNotFound extends Exception
     public function render(): \Illuminate\Http\JsonResponse
     {
         return response()->json([
-            'error' => 'کاربر مورد نظر ثبت نام نکرده است',
+            'error' => 'Only admins have access to this section',
             'code' => 404,
         ]);
     }

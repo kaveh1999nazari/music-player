@@ -9,7 +9,7 @@ class DuplicateMediaException extends Exception
     public function render(): \Illuminate\Http\JsonResponse
     {
         return response()->json([
-            'message' => 'فایل مشابهی قبلاً آپلود شده است',
+            'message' => 'A similar file has already been uploaded',
             'code' => 409,
         ]);
     }

@@ -9,7 +9,7 @@ class UserFollowNotAllow extends Exception
     public function render()
     {
         return response()->json([
-            'message' => 'شما نمیتوانید خودتان را دنبال کنید',
+            'message' => 'Following yourself is not allowed',
             'code' => 406
         ]);
     }

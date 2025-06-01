@@ -9,7 +9,7 @@ class ArtistNotExistException extends Exception
     public function render()
     {
         return response()->json([
-            'message' => 'خواننده مورد نظر پیدا نشد',
+            'message' => 'Artist not found',
             'code' => 404
         ]);
     }

@@ -9,7 +9,7 @@ class MediaNotEmpty extends Exception
     public function render()
     {
         return response()->json([
-            'message' => 'لطفا فایل اپلودی خود را قرار دهید',
+            'message' => 'Please attach the file to upload',
             'code' => 422,
         ]);
     }

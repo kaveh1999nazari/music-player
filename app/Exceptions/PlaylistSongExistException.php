@@ -9,7 +9,7 @@ class PlaylistSongExistException extends Exception
     public function render()
     {
         return response()->json([
-            'message' => 'این اهنگ قبلا اضاف شده است',
+            'message' => 'The song is already in the list',
             'code' => 406
         ]);
     }

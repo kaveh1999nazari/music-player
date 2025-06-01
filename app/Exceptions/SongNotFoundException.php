@@ -9,7 +9,7 @@ class SongNotFoundException extends Exception
     public function render(): \Illuminate\Http\JsonResponse
     {
         return response()->json([
-            'message' => "آهنگ مورد نظر شما یافت نشد",
+            'message' => "The specified song was not found",
             'code' => 404,
         ]);
     }

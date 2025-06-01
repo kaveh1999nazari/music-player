@@ -9,7 +9,7 @@ class UserPasswordIncorrect extends Exception
     public function render(): \Illuminate\Http\JsonResponse
     {
         return response()->json([
-            'error' => 'رمز اشتباه وارد شده است',
+            'error' => 'Incorrect password. Please try again',
             'code' => 401,
         ]);
     }

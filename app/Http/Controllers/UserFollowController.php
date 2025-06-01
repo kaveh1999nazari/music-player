@@ -18,7 +18,7 @@ class UserFollowController extends Controller
         $this->userFollowService->create($request->validated());
 
         return response()->json([
-            'message' => 'با موفقیت دنبال شد',
+            'message' => 'followed successfully',
             'code' => 200
         ]);
     }
@@ -38,7 +38,7 @@ class UserFollowController extends Controller
         $this->userFollowService->delete($followId);
 
         return response()->json([
-            'message' => 'با موفقیت آنفالو شد',
+            'message' => 'Unfollowed successfully',
             'code' => 200
         ]);
     }

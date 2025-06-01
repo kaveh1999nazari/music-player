@@ -9,7 +9,7 @@ class NotFoundSearchException extends Exception
     public function render()
     {
         return response()->json([
-            'message' => 'نتیجه‌ای برای جست‌وجوی شما یافت نشد.',
+            'message' => 'No results found for your search',
             'status' => 404,
         ]);
     }

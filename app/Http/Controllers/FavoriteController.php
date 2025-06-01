@@ -47,7 +47,7 @@ class FavoriteController extends Controller
     {
         $favorite = $this->favoriteService->delete($id);
         return response()->json([
-            'message' => 'باموفقیت از لیست مورد علاقه شما حذف شد',
+            'message' => 'Item removed from favorites successfully',
             'code' => 200
         ]);
     }

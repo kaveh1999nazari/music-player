@@ -9,7 +9,7 @@ class SongIsNotPublicException extends Exception
     public function render()
     {
         return response()->json([
-            'message' => 'آهنگ مورد نظر خصوصی است، نمیتوان جزو لیست قرار داد',
+            'message' => 'The specified song is private and cannot be added to the list',
             'code' => 406
         ]);
     }

@@ -28,7 +28,7 @@ class PlaylistSongController extends Controller
         $this->playlistSongService->delete($id);
 
         return response()->json([
-            'message' => 'باموفقیت از پلی لیست شما حذف شد',
+            'message' => 'The song has been removed from your playlist',
             'code' => 201
         ]);
     }

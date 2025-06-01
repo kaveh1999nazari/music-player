@@ -9,7 +9,7 @@ class FavoriteNotFoundException extends Exception
     public function render(): \Illuminate\Http\JsonResponse
     {
         return response()->json([
-            'message' => "آهنگ مورد علاقه شما در لیست یافت نشد",
+            'message' => "Your favorite song could not be found in the list",
             'code' => 404,
         ]);
     }

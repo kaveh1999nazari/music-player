@@ -49,7 +49,7 @@ class SongController extends Controller
 
         return response()->json([
             'code' => 200,
-            'message' => 'آهنگ مورد نظر پاک شد'
+            'message' => 'The song has been deleted successfully'
         ]);
     }
 }

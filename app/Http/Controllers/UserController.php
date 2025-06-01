@@ -64,7 +64,7 @@ class UserController extends Controller
         $user = $this->userService->updatePassword($request->validated());
 
         return response()->json([
-            'message' => 'با موفقیت رمز شما تغییر یافت',
+            'message' => 'Password updated successfully',
             'code' => 201
         ]);
     }

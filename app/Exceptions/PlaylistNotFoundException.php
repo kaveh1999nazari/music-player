@@ -9,7 +9,7 @@ class PlaylistNotFoundException extends Exception
     public function render()
     {
         return response()->json([
-            'message' => 'پلی موزیک مورد نظر موجود نیست',
+            'message' => 'The requested playlist does not exist',
             'code' => 404
         ]);
     }

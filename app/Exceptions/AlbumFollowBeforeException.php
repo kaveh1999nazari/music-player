@@ -9,7 +9,7 @@ class AlbumFollowBeforeException extends Exception
     public function render()
     {
         return response()->json([
-            'message' => 'شما این آلبوم را قبلا دنبال کرده اید',
+            'message' => 'you choose this album before',
             'code' => 406
         ]);
     }

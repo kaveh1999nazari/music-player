@@ -9,7 +9,7 @@ class DuplicateTitleSongException extends Exception
     public function render(): \Illuminate\Http\JsonResponse
     {
         return response()->json([
-            'message' => "آهنگی با این عنوان قبلاً توسط شما ثبت شده است.",
+            'message' => "A song with this title has already been registered by you",
             'code' => 409,
         ]);
     }
