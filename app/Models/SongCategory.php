@@ -4,9 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class SongCategory extends Model
 {
+    use LogsActivity;
+
     protected $table = 'song_categories';
 
     protected $fillable = [
@@ -22,5 +26,14 @@ class SongCategory extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->useLogName('song_category')
+            ->logOnly(['song_id', 'category_id'])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
     }
 }

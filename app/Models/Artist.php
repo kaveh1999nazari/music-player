@@ -4,9 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Artist extends Model
 {
+    use LogsActivity;
+
     protected $table = 'artists';
 
     protected $fillable = [
@@ -41,5 +45,14 @@ class Artist extends Model
     public function getImageUrlAttribute(): ?string
     {
         return $this->media?->full_url;
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->useLogName('artist')
+            ->logOnly(['name', 'bio', 'share_token'])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
     }
 }

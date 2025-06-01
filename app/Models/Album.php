@@ -5,9 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Album extends Model
 {
+    use LogsActivity;
+
     protected $table = 'albums';
 
     protected $fillable = [
@@ -46,5 +50,14 @@ class Album extends Model
     public function getCoverUrlAttribute(): ?string
     {
         return $this->media?->full_url;
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->useLogName('album')
+            ->logOnly(['name', 'artist_id', 'release_year', 'share_token'])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
     }
 }
