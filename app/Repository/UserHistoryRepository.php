@@ -3,13 +3,19 @@
 namespace App\Repository;
 
 use App\Models\UserHistory;
+use Illuminate\Support\Facades\Auth;
 
 class UserHistoryRepository
 {
-    public function store(array $data): UserHistory
+    public function store(string $itemType, int $itemId, string $action): UserHistory
     {
-        $data['user_id'] = Auth::id();
-        return UserHistory::create($data);
+        return UserHistory::query()
+            ->create([
+                'user_id'    => auth()->id(),
+                'item_type'  => $itemType,
+                'item_id'    => $itemId,
+                'action'     => $action,
+        ]);
     }
 
     public function getRecent(int $limit = 10): \Illuminate\Database\Eloquent\Collection

@@ -14,7 +14,6 @@ class UserHistoryController extends Controller
 
     public function store(UserHistoryCreateRequest $request)
     {
-
         $history = $this->userHistoryService->log($request->validated());
 
         return response()->json([

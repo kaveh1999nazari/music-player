@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('user_histories', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->morphs('item'); // song, album, artist, playlist و غیره
-            $table->string('action'); // play, like, skip, share, download و ...
-            $table->integer('duration')->nullable(); // مثلا چند ثانیه گوش داده
-            $table->timestamp('happened_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->morphs('item');
+            $table->string('action');
+            $table->integer('duration')->nullable();
+            $table->timestamps();
         });
 
     }
