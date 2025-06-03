@@ -9,7 +9,7 @@ class UserNotFound extends Exception
     public function render(): \Illuminate\Http\JsonResponse
     {
         return response()->json([
-            'error' => 'Only admins have access to this section',
+            'error' => 'User is not registered',
             'code' => 404,
         ]);
     }
