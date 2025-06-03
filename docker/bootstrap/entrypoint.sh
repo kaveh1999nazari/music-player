@@ -8,6 +8,11 @@ service cron start
 
 # Run migrations automatically
 cd /music
+
+if [ ! -d "vendor" ]; then
+    composer install
+fi
+
 php artisan migrate --force
 
 # run with supervisord
