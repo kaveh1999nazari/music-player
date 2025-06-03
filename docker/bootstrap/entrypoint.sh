@@ -8,6 +8,16 @@ service cron start
 
 # Run migrations automatically
 cd /music
+
+echo "📦 Checking for vendor directory..."
+
+if [ ! -d "vendor" ]; then
+    echo "📦 vendor not found. Running composer install..."
+    composer install
+else
+    echo "✅ vendor directory found, skipping composer install."
+fi
+
 php artisan migrate --force
 
 # run with supervisord
