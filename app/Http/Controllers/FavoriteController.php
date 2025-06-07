@@ -23,17 +23,20 @@ class FavoriteController extends Controller
         ]);
     }
 
-    public function index()
+    public function index(Request $request): \Illuminate\Http\JsonResponse
     {
-        $favorite = $this->favoriteService->all();
+        $perPage = (int) $request->get('per_page', 10);
+        $page = (int) $request->get('page', 1);
+        $favorite = $this->favoriteService->all($perPage, $page);
 
         return response()->json([
-            'data' => $favorite,
+            'data' => $favorite->items(),
+            'page' => $favorite->currentPage(),
             'code' => 200
         ]);
     }
 
-    public function get(int $id)
+    public function get(int $id): \Illuminate\Http\JsonResponse
     {
         $favorite = $this->favoriteService->get($id);
 
@@ -45,7 +48,7 @@ class FavoriteController extends Controller
 
     public function destroy(int $id)
     {
-        $favorite = $this->favoriteService->delete($id);
+        $this->favoriteService->delete($id);
         return response()->json([
             'message' => 'Item removed from favorites successfully',
             'code' => 200
