@@ -41,8 +41,8 @@ class AlbumFollowService
         return $this->albumFollowRepository->get($id);
     }
 
-    public function getByUserId(int $userId): \Illuminate\Database\Eloquent\Collection
+    public function getByUserId(int $userId, int $perPage, int $page)
     {
-        return $this->albumFollowRepository->getByUserId($userId);
+        return $this->albumFollowRepository->getByUserId($userId, $perPage, $page);
     }
 }
