@@ -30,9 +30,9 @@ class FavoriteService
         }
     }
 
-    public function all()
+    public function all(int $perPage, int $page): \Illuminate\Pagination\LengthAwarePaginator
     {
-        return $this->favoriteRepository->all();
+        return $this->favoriteRepository->all($perPage, $page);
     }
 
     public function get(int $id)
