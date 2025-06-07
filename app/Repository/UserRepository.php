@@ -70,10 +70,10 @@ class UserRepository
             ->first();
     }
 
-    public function all()
+    public function all(int $perPage, $page): \Illuminate\Pagination\LengthAwarePaginator
     {
         return User::query()
-            ->get();
+            ->paginate($perPage, ['*'], 'page', $page);
     }
 
 }

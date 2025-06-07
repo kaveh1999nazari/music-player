@@ -52,9 +52,9 @@ class CategoryRepository
             ->first();
     }
 
-    public function all()
+    public function all(int $perPage, int $page): \Illuminate\Pagination\LengthAwarePaginator
     {
         return Category::query()
-            ->get();
+            ->paginate($perPage, ['*'], 'page', $page);
     }
 }

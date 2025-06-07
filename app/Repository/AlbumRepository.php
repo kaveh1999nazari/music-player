@@ -47,9 +47,9 @@ class AlbumRepository
             ->first();
     }
 
-    public function all()
+    public function all(int $perPage, int $page): \Illuminate\Pagination\LengthAwarePaginator
     {
         return Album::query()
-            ->get();
+            ->paginate($perPage, ['*'], 'page', $page);
     }
 }

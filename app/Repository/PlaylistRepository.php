@@ -22,11 +22,11 @@ class PlaylistRepository
             ]);
     }
 
-    public function all(): \Illuminate\Database\Eloquent\Collection
+    public function all(int $perPage, int $page): \Illuminate\Pagination\LengthAwarePaginator
     {
         return Playlist::query()
             ->where('user_id', auth()->id())
-            ->get();
+            ->paginate($perPage, ['*'], 'page', $page);
     }
 
     public function get(string $shareToken)
