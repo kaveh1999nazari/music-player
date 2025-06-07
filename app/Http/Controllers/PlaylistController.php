@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PlaylistCreateRequest;
 use App\Service\PlaylistService;
+use Illuminate\Http\Request;
 
 class PlaylistController extends Controller
 {
@@ -22,12 +23,15 @@ class PlaylistController extends Controller
         ]);
     }
 
-    public function index(): \Illuminate\Http\JsonResponse
+    public function index(Request $request): \Illuminate\Http\JsonResponse
     {
-        $playList = $this->playlistService->all();
+        $perPage = (int) $request->get('per_page', 10);
+        $page = (int) $request->get('page', 1);
+        $playList = $this->playlistService->all($perPage, $page);
 
         return response()->json([
-            'data' => $playList,
+            'data' => $playList->items(),
+            'page' => $playList->currentPage(),
             'code' => 200
         ]);
     }
