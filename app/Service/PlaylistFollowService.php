@@ -41,8 +41,8 @@ class PlaylistFollowService
         return $this->playlistFollowRepository->get($id);
     }
 
-    public function getByUserId(int $userId): \Illuminate\Database\Eloquent\Collection
+    public function getByUserId(int $userId, int $perPage, int $page): \Illuminate\Pagination\LengthAwarePaginator
     {
-        return $this->playlistFollowRepository->getByUserId($userId);
+        return $this->playlistFollowRepository->getByUserId($userId, $perPage, $page);
     }
 }
