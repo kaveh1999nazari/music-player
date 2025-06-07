@@ -18,6 +18,10 @@ else
     echo "✅ vendor directory found, skipping composer install."
 fi
 
+# Run meili setup once
+php artisan meili:setup
+echo "✅ MeiliSearch typo tolerance setup done."
+
 php artisan migrate --force
 echo "✅ migration created successfully."
 
