@@ -37,11 +37,16 @@ class UserController extends Controller
     /**
      * @throws UserNotAdminException
      */
-    public function index()
+    public function index(Request $request): \Illuminate\Http\JsonResponse
     {
+        $perPage = (int) $request->get('per_page', 10);
+        $page = (int) $request->get('page', 1);
+        $users = $this->userService->all($perPage, $page);
+
         return response()->json([
-            'data' => $this->userService->all(),
-            'code' => 201
+            'data' => $users->items(),
+            'page' => $users->currentPage(),
+            'code' => 200
         ]);
     }
 
