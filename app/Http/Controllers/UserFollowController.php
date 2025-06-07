@@ -23,12 +23,15 @@ class UserFollowController extends Controller
         ]);
     }
 
-    public function index(): \Illuminate\Http\JsonResponse
+    public function index(Request $request): \Illuminate\Http\JsonResponse
     {
-        $userFollow = $this->userFollowService->getByUserId(auth()->id());
+        $perPage = (int) $request->get('per_page', 10);
+        $page = (int) $request->get('page', 1);
+        $userFollow = $this->userFollowService->getByUserId(auth()->id(), $perPage, $page);
 
         return response()->json([
-            'data' => $userFollow,
+            'data' => $userFollow->items(),
+            'page' => $userFollow->currentPage(),
             'code' => 200
         ]);
     }
