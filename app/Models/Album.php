@@ -5,9 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Laravel\Scout\Searchable;
 
 class Album extends Model
 {
+    use Searchable;
+
     protected $table = 'albums';
 
     protected $fillable = [
@@ -46,5 +49,12 @@ class Album extends Model
     public function getCoverUrlAttribute(): ?string
     {
         return $this->media?->full_url;
+    }
+
+    public function toSearchableArray(): array
+    {
+        return [
+            'name' => $this->name,
+        ];
     }
 }

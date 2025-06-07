@@ -6,9 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Laravel\Scout\Searchable;
 
 class Song extends Model
 {
+    use Searchable;
     protected $table = 'songs';
 
     protected $fillable = [
@@ -57,5 +59,12 @@ class Song extends Model
     public function getAudioUrlAttribute(): ?string
     {
         return $this->media?->full_url;
+    }
+
+    public function toSearchableArray(): array
+    {
+        return [
+            'title' => $this->title,
+        ];
     }
 }
