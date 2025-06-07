@@ -29,10 +29,10 @@ class UserService
         return $this->userRepository->create($data);
     }
 
-    public function all()
+    public function all(int $perPage, int $page): \Illuminate\Pagination\LengthAwarePaginator
     {
         if (auth()->user()->is_admin === true) {
-            return $this->userRepository->all();
+            return $this->userRepository->all($perPage, $page);
         } else {
             throw new UserNotAdminException();
         }
