@@ -17,9 +17,9 @@ class PlaylistService
         return $this->playlistRepository->create($data);
     }
 
-    public function all()
+    public function all(int $perPage, int $page): \Illuminate\Pagination\LengthAwarePaginator
     {
-        return $this->playlistRepository->all();
+        return $this->playlistRepository->all($perPage, $page);
     }
 
     public function get(string $shareToken)
