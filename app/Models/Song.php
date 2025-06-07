@@ -67,4 +67,9 @@ class Song extends Model
             'title' => $this->title,
         ];
     }
+
+    public function searchableAs(): string
+    {
+        return 'songs';
+    }
 }

@@ -35,4 +35,9 @@ class Playlist extends Model
         ];
     }
 
+    public function searchableAs(): string
+    {
+        return 'playlists';
+    }
+
 }

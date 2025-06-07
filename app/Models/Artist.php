@@ -52,4 +52,9 @@ class Artist extends Model
             'name' => $this->name,
         ];
     }
+
+    public function searchableAs(): string
+    {
+        return 'artists';
+    }
 }

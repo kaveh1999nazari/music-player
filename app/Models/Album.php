@@ -57,4 +57,9 @@ class Album extends Model
             'name' => $this->name,
         ];
     }
+
+    public function searchableAs(): string
+    {
+        return 'albums';
+    }
 }
