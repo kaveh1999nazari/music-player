@@ -30,6 +30,16 @@ services:
         networks:
             - music-network
 
+    meilisearch:
+        image: getmeili/meilisearch:latest
+        container_name: meilisearch
+        environment:
+            - MEILI_MASTER_KEY=masterKey
+        ports:
+            - "7700:7700"
+        networks:
+            - music-network
+
 volumes:
     pg-data:
 
