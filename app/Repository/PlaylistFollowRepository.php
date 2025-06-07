@@ -29,11 +29,11 @@ class PlaylistFollowRepository
             ->first();
     }
 
-    public function getByUserId(int $userId): \Illuminate\Database\Eloquent\Collection
+    public function getByUserId(int $userId, int $perPage, int $page): \Illuminate\Pagination\LengthAwarePaginator
     {
         return PlaylistFollow::query()
             ->where('user_id', $userId)
-            ->get();
+            ->paginate($perPage, ['*'], 'page', $page);
     }
 
     public function checkExist(int $userId, int $playlistId)
