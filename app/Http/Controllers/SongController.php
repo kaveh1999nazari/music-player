@@ -33,6 +33,7 @@ class SongController extends Controller
         return response()->json([
             'code' => 200,
             'data' => $songs->items(),
+            'page' => $songs->currentPage(),
         ]);
     }
 
