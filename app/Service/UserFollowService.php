@@ -49,8 +49,8 @@ class UserFollowService
         return $this->userFollowRepository->get($id);
     }
 
-    public function getByUserId(int $userId): \Illuminate\Database\Eloquent\Collection
+    public function getByUserId(int $userId, int $perPage, int $page): \Illuminate\Pagination\LengthAwarePaginator
     {
-        return $this->userFollowRepository->getByUserId($userId);
+        return $this->userFollowRepository->getByUserId($userId, $perPage, $page);
     }
 }

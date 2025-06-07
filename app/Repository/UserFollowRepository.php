@@ -29,11 +29,11 @@ class UserFollowRepository
             ->first();
     }
 
-    public function getByUserId(int $userId): \Illuminate\Database\Eloquent\Collection
+    public function getByUserId(int $userId, int $perPage, int $page)
     {
         return UserFollow::query()
             ->where('user_id', $userId)
-            ->get();
+            ->paginate($perPage, ['*'], 'page', $page);
     }
 
     public function checkExist(int $userId, int $followingId)
