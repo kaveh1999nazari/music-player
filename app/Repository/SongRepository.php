@@ -32,12 +32,12 @@ class SongRepository
             ->exists();
     }
 
-    public function all(): \Illuminate\Database\Eloquent\Collection
+    public function all(int $perPage, int $page): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
         return Song::query()
             ->where('created_by', auth()->id())
             ->with(['media'])
-            ->get();
+            ->paginate($perPage, ['*'], 'page', $page);
     }
 
     public function get(string $shareToken): \Illuminate\Database\Eloquent\Model|null

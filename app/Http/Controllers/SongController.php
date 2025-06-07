@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\SongCreateRequest;
 use App\Service\SongService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class SongController extends Controller
 {
@@ -23,13 +24,15 @@ class SongController extends Controller
         ]);
     }
 
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $songs = $this->songService->all();
+        $perPage = (int) $request->get('per_page', 10);
+        $page = (int) $request->get('page', 1);
+        $songs = $this->songService->all($perPage, $page);
 
         return response()->json([
-            'code' => 201,
-            'data' => $songs,
+            'code' => 200,
+            'data' => $songs->items(),
         ]);
     }
 
@@ -38,7 +41,7 @@ class SongController extends Controller
         $song = $this->songService->get($shareToken);
 
         return response()->json([
-            'code' => 201,
+            'code' => 200,
             'data' => $song
         ]);
     }
