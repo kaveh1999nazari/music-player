@@ -24,6 +24,7 @@ use FFMpeg\Format\Audio\Mp3;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class SongService
 {
@@ -128,14 +129,31 @@ class SongService
                 ]);
             }
 
-            $directoryPath = storage_path('app/public/' . $baseRelativePath);
-            File::ensureDirectoryExists($directoryPath, 0755, true);
+            $disk = config('filesystems.default');
+            $baseStoragePath = 'songs/' . auth()->id() . '/' . $this->sanitizeTitle($title);
 
             foreach ([320, 196, 128, 96] as $kbps) {
-                $outputPath = $directoryPath . '/' . $fileName . "_{$kbps}." . $extension;
-                $relativeFilePath = $baseRelativePath . '/' . $fileName . "_{$kbps}." . $extension;
+                $fileNameWithBitrate = $fileName . "_{$kbps}." . $extension;
+                $relativeFilePath = $baseStoragePath . '/' . $fileNameWithBitrate;
 
-                $this->compressAudio($audio, $outputPath, $kbps);
+                if ($disk === 'local') {
+                    $directoryPath = storage_path('app/public/' . $baseStoragePath);
+                    File::ensureDirectoryExists($directoryPath, 0755, true);
+
+                    $outputPath = $directoryPath . '/' . $fileNameWithBitrate;
+
+                    $this->compressAudio($audio, $outputPath, $kbps);
+
+                } elseif  ($disk === 's3') {
+                    $tempPath = storage_path('app/tmp_audio/' . uniqid() . '_' . $fileNameWithBitrate);
+                    File::ensureDirectoryExists(dirname($tempPath), 0755, true);
+
+                    $this->compressAudio($audio, $tempPath, $kbps);
+
+                    Storage::disk($disk)->put($relativeFilePath, File::get($tempPath));
+
+                    File::delete($tempPath);
+                }
 
                 $this->mediaRepository->create([
                     'file_path' => $relativeFilePath,
