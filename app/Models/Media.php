@@ -13,6 +13,7 @@ class Media extends Model
         'mime_type',
         'model_id',
         'model_type',
+        'quality',
     ];
 
     /**
