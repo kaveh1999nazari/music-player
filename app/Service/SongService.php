@@ -10,6 +10,7 @@ use App\Exceptions\DuplicateMediaException;
 use App\Exceptions\DuplicateTitleSongException;
 use App\Exceptions\MediaNotEmpty;
 use App\Exceptions\SongNotFoundException;
+use App\Exceptions\UploadNotSuccessfully;
 use App\Models\Song;
 use App\Repository\AlbumRepository;
 use App\Repository\ArtistRepository;
@@ -150,7 +151,10 @@ class SongService
 
                     $this->compressAudio($audio, $tempPath, $kbps);
 
-                    Storage::disk($disk)->put($relativeFilePath, File::get($tempPath));
+                    $upload = Storage::disk($disk)->put($relativeFilePath, File::get($tempPath));
+                    if ($upload === false) {
+                        throw new UploadNotSuccessfully();
+                    }
 
                     File::delete($tempPath);
                 }
