@@ -31,4 +31,15 @@ class MediaRepository
             ->first();
     }
 
+    public function getByModelAndType(int $modelId, string $modelType, string $fileType)
+    {
+        return Media::query()
+            ->where([
+            'model_id' => $modelId,
+            'model_type' => $modelType,
+            'file_type' => $fileType
+        ])->first();
+    }
+
+
 }
