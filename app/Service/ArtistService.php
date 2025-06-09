@@ -6,6 +6,7 @@ use App\Exceptions\ArtistNotExistException;
 use App\Exceptions\DuplicateArtistException;
 use App\Exceptions\DuplicateMediaException;
 use App\Exceptions\MediaNotEmpty;
+use App\Exceptions\MediaNotFoundException;
 use App\Exceptions\UploadNotSuccessfully;
 use App\Exceptions\UserNotAdminException;
 use App\Models\Artist;
@@ -101,5 +102,35 @@ class ArtistService
             ]);
             return $artist;
         });
+    }
+
+    public function streamPhoto(string $shareToken): string
+    {
+        $artist = $this->artistRepository->getByToken($shareToken);
+
+        if (! $artist) {
+            throw new ArtistNotExistException();
+        }
+
+        $media = $this->mediaRepository->getByModelAndType($artist->id, Artist::class, 'photo');
+
+        if (! $media) {
+            throw new MediaNotFoundException();
+        }
+
+        $disk = config('filesystems.default');
+
+        if ($disk === 's3') {
+            if (!Storage::disk($disk)->exists($media->file_path)) {
+                throw new MediaNotFoundException();
+            }
+
+            return Storage::disk($disk)->temporaryUrl(
+                $media->file_path,
+                now()->addMinutes(5)
+            );
+        }
+
+        return Storage::disk($disk)->url($media->file_path);
     }
 }
