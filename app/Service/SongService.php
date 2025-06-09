@@ -42,13 +42,13 @@ class SongService
         private readonly ArtistRepository       $artistRepository
     ) {}
 
-    public function create(array $data, ?UploadedFile $audio = null): Song
+    public function create(array $data, ?UploadedFile $audio = null,  ?UploadedFile $photo = null): Song
     {
         if (!$audio) {
             throw new MediaNotEmpty();
         }
 
-        return DB::transaction(function () use ($data, $audio) {
+        return DB::transaction(function () use ($data, $audio, $photo) {
             $title = $data['title'];
 
             $baseRelativePath = 'songs/' . auth()->id() . '/' . $this->sanitizeTitle($title);
@@ -171,6 +171,25 @@ class SongService
                 ]);
             }
 
+            if ($photo = ($data['photo'] ?? null) instanceof UploadedFile ? $data['photo'] : null) {
+                $photoName = $this->sanitizeTitle($title) . '.' . $photo->getClientOriginalExtension();
+                $photoPath = 'songs/' . auth()->id() . '/' . $this->sanitizeTitle($title) . '/' . $photoName;
+
+                $upload = Storage::disk($disk)->put($photoPath, File::get($photo->getRealPath()));
+                if ($upload === false) {
+                    throw new UploadNotSuccessfully();
+                }
+
+                $this->mediaRepository->create([
+                    'file_path' => $photoPath,
+                    'file_type' => 'photo',
+                    'mime_type' => $photo->getMimeType(),
+                    'model_id' => $song->id,
+                    'model_type' => Song::class,
+                    'quality' => null,
+                ]);
+            }
+
             return $song;
         });
     }
@@ -202,7 +221,7 @@ class SongService
         $this->songRepository->delete($song);
     }
 
-    public function stream(string $shareToken, int $quality): string
+    public function streamMusic(string $shareToken, int $quality): string
     {
         $song = $this->songRepository->get($shareToken);
         if (!$song) {
@@ -235,6 +254,39 @@ class SongService
         return Storage::disk($disk)->url($media->file_path);
     }
 
+    public function streamPhoto(string $shareToken): string
+    {
+        $song = $this->songRepository->get($shareToken);
+
+        if (!$song) {
+            throw new SongNotFoundException();
+        }
+
+        $media = $this->mediaRepository->getByModelAndType(
+            $song->id,
+            Song::class,
+            'photo'
+        );
+
+        if (!$media) {
+            throw new MediaNotFoundException();
+        }
+
+        $disk = config('filesystems.default');
+
+        if ($disk === 's3') {
+            if (!Storage::disk($disk)->exists($media->file_path)) {
+                throw new MediaNotFoundException();
+            }
+
+            return Storage::disk($disk)->temporaryUrl(
+                $media->file_path,
+                now()->addMinutes(5)
+            );
+        }
+
+        return Storage::disk($disk)->url($media->file_path);
+    }
 
     private function compressAudio(UploadedFile $audio, string $outputPath, int $bitrate): void
     {

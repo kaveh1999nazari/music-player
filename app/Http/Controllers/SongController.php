@@ -16,7 +16,9 @@ class SongController extends Controller
 
     public function create(SongCreateRequest $request): JsonResponse
     {
-        $song = $this->songService->create($request->validated(), $request->file('audio'));
+        $song = $this->songService->create($request->validated(),
+            $request->file('audio'),
+            $request->file('photo'));
 
         return response()->json([
             'id' => $song->share_token,
@@ -57,14 +59,23 @@ class SongController extends Controller
         ]);
     }
 
-    public function stream(Request $request, string $shareToken): JsonResponse
+    public function streamMusic(Request $request, string $shareToken): JsonResponse
     {
         $quality = (int) $request->query('quality', 128);
 
-        $url = $this->songService->stream($shareToken, $quality);
+        $url = $this->songService->streamMusic($shareToken, $quality);
         return response()->json([
             'url' => $url
         ]);
-
     }
+
+    public function streamPhoto(string $shareToken): JsonResponse
+    {
+        $url = $this->songService->streamPhoto($shareToken);
+
+        return response()->json([
+            'url' => $url
+        ]);
+    }
+
 }
