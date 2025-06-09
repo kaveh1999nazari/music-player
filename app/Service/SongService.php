@@ -9,6 +9,8 @@ use App\Exceptions\CategoryNotExistException;
 use App\Exceptions\DuplicateMediaException;
 use App\Exceptions\DuplicateTitleSongException;
 use App\Exceptions\MediaNotEmpty;
+use App\Exceptions\MediaNotFoundException;
+use App\Exceptions\MediaNotFoundQualityException;
 use App\Exceptions\SongNotFoundException;
 use App\Exceptions\UploadNotSuccessfully;
 use App\Models\Song;
@@ -199,6 +201,40 @@ class SongService
 
         $this->songRepository->delete($song);
     }
+
+    public function stream(string $shareToken, int $quality): string
+    {
+        $song = $this->songRepository->get($shareToken);
+        if (!$song) {
+            throw new SongNotFoundException();
+        }
+
+        $media = $this->mediaRepository->getByModelAndQuality(
+            $song->id,
+            Song::class,
+            $quality
+        );
+
+        if (!$media) {
+            throw new MediaNotFoundQualityException();
+        }
+
+        $disk = config('filesystems.default');
+
+        if ($disk === 's3') {
+            if (!Storage::disk($disk)->exists($media->file_path)) {
+                throw new MediaNotFoundException();
+            }
+
+            return Storage::disk($disk)->temporaryUrl(
+                $media->file_path,
+                now()->addMinutes(5)
+            );
+        }
+
+        return Storage::disk($disk)->url($media->file_path);
+    }
+
 
     private function compressAudio(UploadedFile $audio, string $outputPath, int $bitrate): void
     {

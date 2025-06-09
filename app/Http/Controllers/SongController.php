@@ -56,4 +56,16 @@ class SongController extends Controller
             'message' => 'The song has been deleted successfully'
         ]);
     }
+
+    public function stream(Request $request, string $shareToken): JsonResponse
+    {
+        $quality = (int) $request->query('quality', 128);
+
+
+        $url = $this->songService->stream($shareToken, $quality);
+        return response()->json([
+            'url' => $url
+        ]);
+
+    }
 }
