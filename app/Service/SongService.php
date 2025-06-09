@@ -22,6 +22,7 @@ use App\Repository\SongAlbumRepository;
 use App\Repository\SongArtistRepository;
 use App\Repository\SongCategoryRepository;
 use App\Repository\SongRepository;
+use App\Trait\SanitizesTitle;
 use FFMpeg\FFMpeg;
 use FFMpeg\Format\Audio\Mp3;
 use Illuminate\Http\UploadedFile;
@@ -31,6 +32,8 @@ use Illuminate\Support\Facades\Storage;
 
 class SongService
 {
+    use SanitizesTitle;
+
     public function __construct(
         private readonly SongRepository $songRepository,
         private readonly MediaRepository        $mediaRepository,
@@ -44,7 +47,7 @@ class SongService
 
     public function create(array $data, ?UploadedFile $audio = null,  ?UploadedFile $photo = null): Song
     {
-        if (!$audio) {
+        if (!$audio || !$photo) {
             throw new MediaNotEmpty();
         }
 
@@ -303,11 +306,5 @@ class SongService
         $format->setAudioChannels(2);
 
         $audioFile->save($format, $outputPath);
-    }
-
-    private function sanitizeTitle(string $title): string
-    {
-        $title = preg_replace('/[^\p{Arabic}a-zA-Z0-9_-]+/u', '_', $title);
-        return trim($title, '_');
     }
 }
