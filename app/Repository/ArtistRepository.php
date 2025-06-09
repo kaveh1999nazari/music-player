@@ -44,6 +44,7 @@ class ArtistRepository
         return Artist::query()
             ->with('songArtist')
             ->where('share_token', $shareToken)
+            ->with('media')
             ->first();
     }
 
