@@ -61,7 +61,6 @@ class SongController extends Controller
     {
         $quality = (int) $request->query('quality', 128);
 
-
         $url = $this->songService->stream($shareToken, $quality);
         return response()->json([
             'url' => $url
