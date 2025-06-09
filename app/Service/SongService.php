@@ -146,7 +146,7 @@ class SongService
                     $this->compressAudio($audio, $outputPath, $kbps);
 
                 } elseif  ($disk === 's3') {
-                    $tempPath = storage_path('app/tmp_audio/' . uniqid() . '_' . $fileNameWithBitrate);
+                    $tempPath = storage_path('app/public/' . uniqid() . '_' . $fileNameWithBitrate);
                     File::ensureDirectoryExists(dirname($tempPath), 0755, true);
 
                     $this->compressAudio($audio, $tempPath, $kbps);
