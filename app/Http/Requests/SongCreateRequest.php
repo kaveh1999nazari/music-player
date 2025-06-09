@@ -25,6 +25,7 @@ class SongCreateRequest extends FormRequest
             'title' => 'required|string|max:255',
             'is_public' => 'nullable',
             'audio' => 'required|file|max:102400',
+            'photo' => 'nullable|file|max:102400',
             'category_id' => 'nullable|integer',
             'category_name' => 'nullable|string|max:255',
             'artist_id' => 'nullable|integer',
