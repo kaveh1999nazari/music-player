@@ -31,6 +31,7 @@ Route::middleware('user')->group(function () {
     Route::delete('/collection/track/{id}', [\App\Http\Controllers\FavoriteController::class, 'destroy']);
     Route::get('/album/{shareToken}', [\App\Http\Controllers\AlbumController::class, 'getByToken']);
     Route::get('/category/{shareToken}', [\App\Http\Controllers\CategoryController::class, 'getByToken']);
+    Route::post('/artist', [\App\Http\Controllers\ArtistController::class, 'create']);
     Route::get('/artist/{shareToken}', [\App\Http\Controllers\ArtistController::class, 'getByToken']);
     Route::get('/users', [\App\Http\Controllers\UserController::class, 'index']);
     Route::get('/user/{id}', [\App\Http\Controllers\UserController::class, 'get']);
