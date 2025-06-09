@@ -32,4 +32,15 @@ class ArtistController extends Controller
             'code' => 201
         ]);
     }
+
+    public function streamPhoto(string $shareToken): \Illuminate\Http\JsonResponse
+    {
+        $url = $this->artistService->streamPhoto($shareToken);
+
+        return response()->json([
+            'url' =>  $url,
+        ]);
+
+
+    }
 }
