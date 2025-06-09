@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('file_type');
             $table->string('mime_type');
             $table->morphs('model');
-            $table->string('quality');
+            $table->string('quality')->nullable();
             $table->timestamps();
         });
     }
