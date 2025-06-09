@@ -24,6 +24,13 @@ class ArtistRepository
             ->exists();
     }
 
+    public function checkExistByName(string $name): bool
+    {
+        return Artist::query()
+            ->where('name', $name)
+            ->exists();
+    }
+
     public function getById(int $id)
     {
         return Artist::query()
