@@ -33,6 +33,7 @@ Route::middleware('user')->group(function () {
     Route::get('/category/{shareToken}', [\App\Http\Controllers\CategoryController::class, 'getByToken']);
     Route::post('/artist', [\App\Http\Controllers\ArtistController::class, 'create']);
     Route::get('/artist/{shareToken}', [\App\Http\Controllers\ArtistController::class, 'getByToken']);
+    Route::get('/artist/{shareToken}/stream/photo', [\App\Http\Controllers\ArtistController::class, 'streamPhoto']);
     Route::get('/users', [\App\Http\Controllers\UserController::class, 'index']);
     Route::get('/user/{id}', [\App\Http\Controllers\UserController::class, 'get']);
     Route::get('/search', [\App\Http\Controllers\SearchController::class, 'search']);
