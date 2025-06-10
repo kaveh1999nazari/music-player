@@ -37,6 +37,7 @@ Route::middleware('user')->group(function () {
     Route::get('/artist/{shareToken}/stream/photo', [\App\Http\Controllers\ArtistController::class, 'streamPhoto']);
     Route::get('/users', [\App\Http\Controllers\UserController::class, 'index']);
     Route::get('/user/{id}', [\App\Http\Controllers\UserController::class, 'get']);
+    Route::get('/user/stream/photo', [\App\Http\Controllers\UserController::class, 'streamPhoto']);
     Route::get('/search', [\App\Http\Controllers\SearchController::class, 'search']);
     Route::post('/follow', [\App\Http\Controllers\UserFollowController::class, 'store']);
     Route::get('/follow', [\App\Http\Controllers\UserFollowController::class, 'index']);
