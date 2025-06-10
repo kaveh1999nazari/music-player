@@ -27,7 +27,6 @@ class User extends Authenticatable implements JWTSubject
         'last_login',
         'otp_code',
         'otp_expired',
-        'photo'
     ];
 
     /**
@@ -37,6 +36,10 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $hidden = [
         'password',
+        'access_token',
+        'refresh_token',
+        'otp_code',
+        'otp_expired',
     ];
 
     /**
