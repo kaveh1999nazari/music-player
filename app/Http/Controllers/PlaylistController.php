@@ -47,6 +47,15 @@ class PlaylistController extends Controller
         ]);
     }
 
+    public function streamPhoto(string $shareToken): \Illuminate\Http\JsonResponse
+    {
+        $photoUrl = $this->playlistService->streamPhoto($shareToken);
+
+        return response()->json([
+            'url' => $photoUrl
+        ]);
+    }
+
     public function destroy(string $shareToken)
     {
         $playList = $this->playlistService->delete($shareToken);
