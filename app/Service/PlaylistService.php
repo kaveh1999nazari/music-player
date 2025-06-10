@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Exceptions\MediaNotEmpty;
+use App\Exceptions\MediaNotFoundException;
 use App\Exceptions\PlaylistNotFoundException;
 use App\Exceptions\UploadNotSuccessfully;
 use App\Models\Playlist;
@@ -83,6 +84,40 @@ class PlaylistService
         }
 
         return $playList;
+    }
+
+    public function streamPhoto(string $shareToken): string
+    {
+        $playlist = $this->playlistRepository->get($shareToken);
+
+        if (! $playlist) {
+            throw new PlaylistNotFoundException();
+        }
+
+        $media = $this->mediaRepository->getByModelAndType(
+            $playlist->id,
+            Playlist::class,
+            'photo'
+        );
+
+        if (! $media) {
+            throw new MediaNotFoundException();
+        }
+
+        $disk = config('filesystems.default');
+
+        if ($disk === 's3') {
+            if (!Storage::disk($disk)->exists($media->file_path)) {
+                throw new MediaNotFoundException();
+            }
+
+            return Storage::disk($disk)->temporaryUrl(
+                $media->file_path,
+                now()->addMinutes(5)
+            );
+        }
+
+        return Storage::disk($disk)->url($media->file_path);
     }
 
     public function delete(string $shareToken)
