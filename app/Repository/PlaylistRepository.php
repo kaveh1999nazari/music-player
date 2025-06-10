@@ -3,10 +3,7 @@
 namespace App\Repository;
 
 use App\Models\Playlist;
-use App\Models\PlaylistSong;
-use App\Models\Song;
 use App\Trait\GeneratesUniqueShareToken;
-use Illuminate\Support\Str;
 
 class PlaylistRepository
 {
@@ -25,6 +22,7 @@ class PlaylistRepository
     public function all(int $perPage, int $page): \Illuminate\Pagination\LengthAwarePaginator
     {
         return Playlist::query()
+            ->with('media')
             ->where('user_id', auth()->id())
             ->paginate($perPage, ['*'], 'page', $page);
     }
@@ -32,7 +30,7 @@ class PlaylistRepository
     public function get(string $shareToken)
     {
         return Playlist::query()
-            ->with('playlistSongs')
+            ->with(['playlistSongs', 'media'])
             ->where('share_token', $shareToken)
             ->where('user_id', auth()->id())
             ->first();
@@ -41,6 +39,7 @@ class PlaylistRepository
     public function getById(int $id)
     {
         return Playlist::query()
+            ->with('media')
             ->where('id', $id)
             ->first();
     }
