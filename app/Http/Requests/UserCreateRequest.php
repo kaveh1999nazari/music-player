@@ -22,11 +22,11 @@ class UserCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'first_name' => 'nullable|string|max:255',
-            'last_name' => 'nullable|string|max:255',
+            'full_name' => 'nullable|string|max:255',
             'email' => 'required|string|regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
             'mobile' => 'nullable|string|regex:/^09+[0-9]{9}$/',
-            'password' => 'nullable|string'
+            'password' => 'nullable|string',
+            'photo' => 'nullable|file|max:2048',
         ];
     }
 }
