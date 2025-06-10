@@ -25,5 +25,8 @@ echo "✅ MeiliSearch typo tolerance setup done."
 php artisan migrate --force
 echo "✅ migration created successfully."
 
+php artisan storage:link
+echo "✅ setting local storage."
+
 # run with supervisord
 exec "$@"
