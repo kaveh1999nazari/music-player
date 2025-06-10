@@ -26,7 +26,7 @@ class UserController extends Controller
      */
     public function create(UserCreateRequest $request): \Illuminate\Http\JsonResponse
     {
-        $user = $this->userService->create($request->validated());
+        $user = $this->userService->create($request->validated(), $request->file('photo'));
 
         return response()->json([
             'id' => $user->id,
