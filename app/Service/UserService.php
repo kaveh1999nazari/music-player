@@ -2,31 +2,88 @@
 
 namespace App\Service;
 
+use App\Exceptions\DuplicateMediaException;
 use App\Exceptions\InvalidUserToken;
+use App\Exceptions\MediaNotEmpty;
+use App\Exceptions\UploadNotSuccessfully;
 use App\Exceptions\UserExistException;
 use App\Exceptions\UserNotAdminException;
 use App\Exceptions\UserNotFound;
 use App\Exceptions\UserPasswordIncorrect;
-use App\Http\Requests\UserRequestOtpRequest;
 use App\Models\User;
+use App\Repository\MediaRepository;
 use App\Repository\UserRepository;
+use App\Trait\SanitizesTitle;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
-use Psy\Util\Str;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class UserService
 {
+    use SanitizesTitle;
     public function __construct(
-        private readonly UserRepository $userRepository
+        private readonly UserRepository $userRepository,
+        private readonly MediaRepository $mediaRepository,
     )
     {}
 
-    public function create(array $data): \App\Models\User
+    public function create(array $data, ?UploadedFile $photo = null): \App\Models\User
     {
-        $user = $this->userRepository->get($data['email'], $data['mobile']);
-        if ($user) {
-            throw new UserExistException();
+        if ( !$photo) {
+            throw new MediaNotEmpty();
         }
-        return $this->userRepository->create($data);
+
+        return DB::transaction(function () use ($data, $photo) {
+            if ($this->userRepository->checkExistByEmailAndMobile($data['email'], $data['mobile']) === true) {
+                throw new UserExistException();
+            }
+
+            $user = $this->userRepository->create($data);
+
+            $baseRelativePath = 'users/' . $user->id . '/' . $this->sanitizeTitle($data['full_name']);
+            $fileName = Str::random(8);
+            $extension = $photo->getClientOriginalExtension();
+
+            if ($this->mediaRepository->existsDuplicateByName($baseRelativePath . '/' . $fileName . '.' . $extension)) {
+                throw new DuplicateMediaException();
+            }
+
+            $disk = config('filesystems.default');
+            $baseStoragePath = 'users/' . $user->id . '/' . $this->sanitizeTitle($data['full_name']);
+            $fileNameWithBitrate = $fileName . '.' . $extension;
+            $relativeFilePath = $baseStoragePath . '/' . $fileNameWithBitrate;
+
+            if ($disk === 'local') {
+                $directoryPath = storage_path('app/public/' . $baseStoragePath);
+                File::ensureDirectoryExists($directoryPath, 0755, true);
+                $outputPath = $directoryPath . '/' . $fileNameWithBitrate;
+                File::put($outputPath, File::get($photo->getRealPath()));
+            } elseif ($disk === 's3') {
+                $tempPath = storage_path('app/public/' . uniqid() . '_' . $fileNameWithBitrate);
+                File::ensureDirectoryExists(dirname($tempPath), 0755, true);
+                File::put($tempPath, File::get($photo->getRealPath()));
+
+                $upload = Storage::disk($disk)->put($relativeFilePath, File::get($tempPath));
+                if ($upload === false) {
+                    throw new UploadNotSuccessfully();
+                }
+
+                File::delete($tempPath);
+            }
+
+            $this->mediaRepository->create([
+                'file_path' => $relativeFilePath,
+                'file_type' => 'photo',
+                'mime_type' => $photo->getMimeType(),
+                'model_id' => $user->id,
+                'model_type' => User::class,
+            ]);
+
+            return $user;
+        });
     }
 
     public function all(int $perPage, int $page): \Illuminate\Pagination\LengthAwarePaginator
