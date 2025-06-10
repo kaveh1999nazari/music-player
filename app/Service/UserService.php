@@ -209,4 +209,44 @@ class UserService
             'expires_in' => auth()->factory()->getTTL() * 60
         ]);
     }
+
+    public function streamPhoto(int $userId): string
+    {
+        $user = $this->userRepository->getById($userId);
+
+        if (! $user) {
+            throw new UserNotFound();
+        }
+
+        $media = $this->mediaRepository->getByModelAndType($user->id, User::class, 'photo');
+
+        if (! $media) {
+            throw new \App\Exceptions\MediaNotFoundException();
+        }
+
+        $filePath = $media->file_path;
+        $disk = config('filesystems.default');
+
+        if (Str::startsWith($filePath, ['http://', 'https://'])) {
+            return $filePath;
+        }
+
+        if ($disk === 's3') {
+            if (!Storage::disk($disk)->exists($filePath)) {
+                return $filePath;
+            }
+
+            return Storage::disk($disk)->temporaryUrl(
+                $filePath,
+                now()->addMinutes(5)
+            );
+        }
+
+        if (!Storage::disk($disk)->exists($filePath)) {
+            return $filePath;
+        }
+
+        return Storage::disk($disk)->url($filePath);
+    }
+
 }
