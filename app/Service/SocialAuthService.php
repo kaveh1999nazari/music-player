@@ -3,6 +3,8 @@
 namespace App\Service;
 
 use App\Exceptions\UserExistException;
+use App\Models\User;
+use App\Repository\MediaRepository;
 use App\Repository\SocialAuthRepository;
 use App\Repository\UserRepository;
 use Illuminate\Support\Facades\Auth;
@@ -14,6 +16,7 @@ class SocialAuthService
     public function __construct(
         protected UserRepository $userRepository,
         protected SocialAuthRepository $socialAuthRepository,
+        protected MediaRepository $mediaRepository,
     ) {}
 
     public function redirect(string $provider)
@@ -34,10 +37,17 @@ class SocialAuthService
                 $user = $this->userRepository->create([
                     'full_name' => $socialUser->getName(),
                     'email' => $socialUser->getEmail(),
-                    'photo' => $socialUser->getAvatar(),
                     'password' => Str::random(32),
                 ]);
-
+                if ($socialUser->getAvatar()) {
+                    $this->mediaRepository->create([
+                        'file_path' => $socialUser->getAvatar(),
+                        'file_type' => 'photo',
+                        'mime_type' => 'image/jpeg',
+                        'model_id' => $user->id,
+                        'model_type' => User::class,
+                    ]);
+                }
             }else {
                 throw new UserExistException();
             }
