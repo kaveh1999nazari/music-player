@@ -15,7 +15,6 @@ class UserRepository
             'full_name' => $data['full_name'] ?? null,
             'email' => $data['email'],
             'mobile' => $data['mobile'] ?? null,
-            'photo' => $data['photo'] ?? null,
             'password' => Hash::make($data['password']) ?? null,
         ]);
     }
@@ -38,6 +37,7 @@ class UserRepository
         return User::query()
             ->where('email', $email)
             ->orWhere('mobile', $mobile)
+            ->with('media')
             ->first();
     }
 
@@ -45,6 +45,7 @@ class UserRepository
     {
         return User::query()
             ->where('email', $email)
+            ->with('media')
             ->first();
     }
 
@@ -58,7 +59,7 @@ class UserRepository
     public function getById(int $id)
     {
         return User::query()
-            ->with('playlists')
+            ->with(['playlists', 'media'])
             ->where('id', $id)
             ->first();
     }
@@ -73,7 +74,16 @@ class UserRepository
     public function all(int $perPage, $page): \Illuminate\Pagination\LengthAwarePaginator
     {
         return User::query()
+            ->with('media')
             ->paginate($perPage, ['*'], 'page', $page);
+    }
+
+    public function checkExistByEmailAndMobile(string $email, string $mobile): bool
+    {
+        return  User::query()
+            ->where('email', $email)
+            ->where('mobile', $mobile)
+            ->exists();
     }
 
 }
