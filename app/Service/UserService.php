@@ -218,35 +218,34 @@ class UserService
             throw new UserNotFound();
         }
 
-        $media = $this->mediaRepository->getByModelAndType($user->id, User::class, 'photo');
+        if ($user->id === auth()->id()) {
 
-        if (! $media) {
-            throw new \App\Exceptions\MediaNotFoundException();
-        }
+            $media = $this->mediaRepository->getByModelAndType($user->id, User::class, 'photo');
 
-        $filePath = $media->file_path;
-        $disk = config('filesystems.default');
+            if (!$media) {
+                throw new \App\Exceptions\MediaNotFoundException();
+            }
 
-        if (Str::startsWith($filePath, ['http://', 'https://'])) {
-            return $filePath;
-        }
+            $filePath = $media->file_path;
+            $disk = config('filesystems.default');
 
-        if ($disk === 's3') {
-            if (!Storage::disk($disk)->exists($filePath)) {
+            if (Str::startsWith($filePath, ['http://', 'https://'])) {
                 return $filePath;
             }
 
-            return Storage::disk($disk)->temporaryUrl(
-                $filePath,
-                now()->addMinutes(5)
-            );
-        }
+            if ($disk === 's3') {
+                if (!Storage::disk($disk)->exists($filePath)) {
+                    return $filePath;
+                }
 
-        if (!Storage::disk($disk)->exists($filePath)) {
-            return $filePath;
+                return Storage::disk($disk)->temporaryUrl(
+                    $filePath,
+                    now()->addMinutes(5)
+                );
+            }
+            return Storage::disk($disk)->url($filePath);
+        }else {
+            throw new \Exception(message: 'not allowed', code: 406) ;
         }
-
-        return Storage::disk($disk)->url($filePath);
     }
-
 }
