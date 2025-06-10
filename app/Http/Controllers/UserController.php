@@ -119,9 +119,9 @@ class UserController extends Controller
         return $this->userService->refreshToken($request->input('refresh_token'));
     }
 
-    public function streamPhoto(): \Illuminate\Http\JsonResponse
+    public function streamPhoto(int $id): \Illuminate\Http\JsonResponse
     {
-        $url = $this->userService->streamPhoto(auth()->id());
+        $url = $this->userService->streamPhoto($id);
 
         return response()->json([
             'url' =>  $url,
