@@ -15,10 +15,13 @@ class PlaylistController extends Controller
 
     public function create(PlaylistCreateRequest $request): \Illuminate\Http\JsonResponse
     {
-        $playList = $this->playlistService->create($request->validated());
+        $playlist = $this->playlistService->create(
+            $request->validated(),
+            $request->file('photo')
+        );
 
         return response()->json([
-            'id' => $playList->share_token,
+            'id' => $playlist->share_token,
             'code' => 201
         ]);
     }
