@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Laravel\Scout\Searchable;
 
 class Playlist extends Model
@@ -40,4 +41,8 @@ class Playlist extends Model
         return 'playlists';
     }
 
+    public function media(): MorphOne
+    {
+        return $this->morphOne(Media::class, 'model');
+    }
 }
