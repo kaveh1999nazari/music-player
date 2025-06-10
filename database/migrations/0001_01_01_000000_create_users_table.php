@@ -23,7 +23,6 @@ return new class extends Migration
             $table->text('refresh_token')->nullable();
             $table->string('otp_code')->nullable();
             $table->timestamp('otp_expired')->nullable();
-            $table->string('photo')->nullable();
             $table->timestamps();
         });
 
