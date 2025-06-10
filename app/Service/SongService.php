@@ -45,7 +45,7 @@ class SongService
         private readonly ArtistRepository       $artistRepository
     ) {}
 
-    public function create(array $data, ?UploadedFile $audio = null,  ?UploadedFile $photo = null): Song
+    public function create(array $data, ?UploadedFile $audio = null, ?UploadedFile $photo = null): Song
     {
         if (!$audio || !$photo) {
             throw new MediaNotEmpty();
@@ -53,7 +53,7 @@ class SongService
 
         return DB::transaction(function () use ($data, $audio, $photo) {
             $title = $data['title'];
-
+            $disk = config('filesystems.default');
             $baseRelativePath = 'songs/' . auth()->id() . '/' . $this->sanitizeTitle($title);
             $fileName = pathinfo($audio->getClientOriginalName(), PATHINFO_FILENAME);
             $extension = $audio->getClientOriginalExtension();
@@ -80,7 +80,7 @@ class SongService
             }
 
             if (isset($data['category_name'])) {
-                if ($this->categoryRepository->checkExistByName($data['category_name']) === false) {
+                if (!$this->categoryRepository->checkExistByName($data['category_name'])) {
                     $category = $this->categoryRepository->create(['name' => $data['category_name']]);
                     $this->songCategoryRepository->create([
                         'category_id' => $category->id,
@@ -89,7 +89,6 @@ class SongService
                 } else {
                     throw new CategoryExistException();
                 }
-
             }
 
             if (isset($data['artist_id'])) {
@@ -135,22 +134,18 @@ class SongService
                 ]);
             }
 
-            $disk = config('filesystems.default');
-            $baseStoragePath = 'songs/' . auth()->id() . '/' . $this->sanitizeTitle($title);
-
             foreach ([320, 196, 128, 96] as $kbps) {
                 $fileNameWithBitrate = $fileName . "_{$kbps}." . $extension;
-                $relativeFilePath = $baseStoragePath . '/' . $fileNameWithBitrate;
+                $relativeFilePath = $baseRelativePath . '/' . $fileNameWithBitrate;
 
                 if ($disk === 'local') {
-                    $directoryPath = storage_path('app/public/' . $baseStoragePath);
+                    $directoryPath = storage_path('app/public/' . $baseRelativePath);
                     File::ensureDirectoryExists($directoryPath, 0755, true);
-
                     $outputPath = $directoryPath . '/' . $fileNameWithBitrate;
 
                     $this->compressAudio($audio, $outputPath, $kbps);
 
-                } elseif  ($disk === 's3') {
+                } elseif ($disk === 's3') {
                     $tempPath = storage_path('app/public/' . uniqid() . '_' . $fileNameWithBitrate);
                     File::ensureDirectoryExists(dirname($tempPath), 0755, true);
 
@@ -174,13 +169,20 @@ class SongService
                 ]);
             }
 
-            if ($photo = ($data['photo'] ?? null) instanceof UploadedFile ? $data['photo'] : null) {
+            if ($photo instanceof UploadedFile) {
                 $photoName = $this->sanitizeTitle($title) . '.' . $photo->getClientOriginalExtension();
-                $photoPath = 'songs/' . auth()->id() . '/' . $this->sanitizeTitle($title) . '/' . $photoName;
+                $photoPath = $baseRelativePath . '/' . $photoName;
 
-                $upload = Storage::disk($disk)->put($photoPath, File::get($photo->getRealPath()));
-                if ($upload === false) {
-                    throw new UploadNotSuccessfully();
+                if ($disk === 'local') {
+                    $directoryPath = storage_path('app/public/' . dirname($photoPath));
+                    File::ensureDirectoryExists($directoryPath, 0755, true);
+                    File::put($directoryPath . '/' . $photoName, File::get($photo->getRealPath()));
+
+                } elseif ($disk === 's3') {
+                    $upload = Storage::disk($disk)->put($photoPath, File::get($photo->getRealPath()));
+                    if ($upload === false) {
+                        throw new UploadNotSuccessfully();
+                    }
                 }
 
                 $this->mediaRepository->create([
