@@ -55,4 +55,12 @@ class PlaylistRepository
             ->where('id', $id)
             ->exists();
     }
+
+    public function checkByUserId(int $playlistId, int $userId): bool
+    {
+        return Playlist::query()
+            ->where('id', $playlistId)
+            ->where('user_id', $userId)
+            ->exists();
+    }
 }
