@@ -22,7 +22,8 @@ class PlaylistSongService
 
     public function create(array $data)
     {
-        if ($this->playlistRepository->checkExist($data['playlist_id']) === true) {
+        if ($this->playlistRepository->checkExist($data['playlist_id']) === true &&
+            $this->playlistRepository->checkByUserId($data['playlist_id'], auth()->id()) === true) {
             $existing = $this->playlistSongRepository->get(
                 $data['playlist_id'],
                 $data['song_id']
@@ -31,20 +32,19 @@ class PlaylistSongService
             if ($existing) {
                 throw new PlaylistSongExistException;
             }
+                $song = $this->songRepository->getById($data['song_id']);
 
-            $song = $this->songRepository->getById($data['song_id']);
+                if (!$song) {
+                    throw new SongNotFoundException();
+                } elseif ($song->is_public === false) {
+                    throw new SongIsNotPublicException();
+                }
 
-            if (! $song) {
-                throw new SongNotFoundException();
-            } elseif ($song->is_public === false) {
-                throw new SongIsNotPublicException();
-            }
-
-            return $this->playlistSongRepository->create([
-                'playlist_id' => $data['playlist_id'],
-                'song_id' => $song->id,
-                'added_at' => now()
-            ]);
+                return $this->playlistSongRepository->create([
+                    'playlist_id' => $data['playlist_id'],
+                    'song_id' => $song->id,
+                    'added_at' => now()
+                ]);
         }else {
             throw new PlaylistNotFoundException();
         }
