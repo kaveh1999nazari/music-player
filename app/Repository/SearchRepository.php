@@ -18,6 +18,11 @@ class SearchRepository
     public function searchAlbums(string $query, int $perPage, int $page): \Illuminate\Pagination\LengthAwarePaginator
     {
         return Album::search($query)
+            ->query(function ($builder) {
+                $builder->with(['songs' => function ($query) {
+                    $query->where('is_public', false);
+                }]);
+            })
             ->paginate($perPage, 'page', $page);
     }
 
