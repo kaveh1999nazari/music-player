@@ -23,7 +23,7 @@ class PlaylistCreateRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:255',
-            'photo' => 'required|image|mimes:jpg,jpeg,png|max:5120'
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:5120'
         ];
     }
 }
