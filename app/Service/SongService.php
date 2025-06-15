@@ -47,7 +47,7 @@ class SongService
 
     public function create(array $data, ?UploadedFile $audio = null, ?UploadedFile $photo = null): Song
     {
-        if (!$audio || !$photo) {
+        if (!$audio) {
             throw new MediaNotEmpty();
         }
 

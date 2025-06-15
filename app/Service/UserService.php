@@ -32,9 +32,9 @@ class UserService
 
     public function create(array $data, ?UploadedFile $photo = null): \App\Models\User
     {
-        if ( !$photo) {
-            throw new MediaNotEmpty();
-        }
+//        if ( !$photo) {
+//            throw new MediaNotEmpty();
+//        }
 
         return DB::transaction(function () use ($data, $photo) {
             if ($this->userRepository->checkExistByEmailAndMobile($data['email'], $data['mobile']) === true) {
