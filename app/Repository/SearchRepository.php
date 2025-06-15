@@ -18,17 +18,14 @@ class SearchRepository
     public function searchAlbums(string $query, int $perPage, int $page): \Illuminate\Pagination\LengthAwarePaginator
     {
         return Album::search($query)
-            ->query(function ($builder) {
-                $builder->with(['songs' => function ($query) {
-                    $query->where('is_public', false);
-                }]);
-            })
+            ->query(fn($q) => $q->with('songs'))
             ->paginate($perPage, 'page', $page);
     }
 
     public function searchArtists(string $query, int $perPage, int $page): \Illuminate\Pagination\LengthAwarePaginator
     {
         return Artist::search($query)
+            ->query(fn($q) => $q->with('songs'))
             ->paginate($perPage, 'page', $page);
     }
 
