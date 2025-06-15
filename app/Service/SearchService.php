@@ -18,24 +18,20 @@ class SearchService
         $results = [];
         $currentPage = $page;
 
-        // 🎵 SONGS
         if (empty($filters) || in_array('songs', $filters)) {
             $songs = $this->searchRepository->searchSongs($query, $perPage, $page);
 
-            // فقط آهنگ‌های عمومی
             $publicSongs = collect($songs->items())->filter(fn($song) => $song->is_public);
 
             if ($publicSongs->isNotEmpty()) {
-                $results['songs'] = $publicSongs->values(); // reset index
+                $results['songs'] = $publicSongs->values();
                 $currentPage = $songs->currentPage();
             }
         }
 
-        // 💿 ALBUMS
         if (empty($filters) || in_array('albums', $filters)) {
             $albums = $this->searchRepository->searchAlbums($query, $perPage, $page);
 
-            // فقط آلبوم‌هایی که حداقل یک آهنگ عمومی دارند
             $publicAlbums = collect($albums->items())->filter(function ($album) {
                 return $album->songs->contains(fn($song) => $song->is_public);
             });
@@ -46,11 +42,9 @@ class SearchService
             }
         }
 
-        // 👤 ARTISTS
         if (empty($filters) || in_array('artists', $filters)) {
             $artists = $this->searchRepository->searchArtists($query, $perPage, $page);
 
-            // فقط آرتیست‌هایی که حداقل یک آهنگ عمومی دارن
             $publicArtists = collect($artists->items())->filter(function ($artist) {
                 return $artist->songs->contains(fn($song) => $song->is_public);
             });
@@ -61,11 +55,9 @@ class SearchService
             }
         }
 
-        // 📻 PLAYLISTS
         if (empty($filters) || in_array('playlists', $filters)) {
             $playlists = $this->searchRepository->searchPlaylists($query, $perPage, $page);
 
-            // فقط پلی‌لیست‌هایی که عمومی هستن
             $publicPlaylists = collect($playlists->items())->filter(fn($p) => $p->is_public);
 
             if ($publicPlaylists->isNotEmpty()) {
