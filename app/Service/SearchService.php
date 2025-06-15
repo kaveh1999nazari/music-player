@@ -20,14 +20,14 @@ class SearchService
 
         if (empty($filters) || in_array('songs', $filters)) {
             $songs = $this->searchRepository->searchSongs($query, $perPage, $page);
-            if ($songs->total() > 0) {
+            if ($songs->total() > 0 && $songs->items()[0]->is_public === true) {
                 $results['songs'] = $songs->items();
                 $currentPage = $songs->currentPage();
             }
         }
         if (empty($filters) || in_array('albums', $filters)) {
             $albums = $this->searchRepository->searchAlbums($query, $perPage, $page);
-            if ($albums->total() > 0) {
+            if ($albums->total() > 0 && $albums->items()[0]->songs[0]->is_public === true) {
                 $results['albums'] = $albums->items();
                 $currentPage = $albums->currentPage();
             }
@@ -41,7 +41,7 @@ class SearchService
         }
         if (empty($filters) || in_array('playlists', $filters)) {
             $playlists = $this->searchRepository->searchPlaylists($query, $perPage, $page);
-            if ($playlists->total() > 0) {
+            if ($playlists->total() > 0 && $playlists->items()[0]->is_public === true) {
                 $results['playlists'] = $playlists->items();
                 $currentPage = $playlists->currentPage();
             }
