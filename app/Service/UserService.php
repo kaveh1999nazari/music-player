@@ -43,44 +43,46 @@ class UserService
 
             $user = $this->userRepository->create($data);
 
-            $baseRelativePath = 'users/' . $user->id . '/' . $this->sanitizeTitle($data['full_name']);
-            $fileName = Str::random(8);
-            $extension = $photo->getClientOriginalExtension();
+            if ($photo instanceof UploadedFile) {
+                $baseRelativePath = 'users/' . $user->id . '/' . $this->sanitizeTitle($data['full_name']);
+                $fileName = Str::random(8);
+                $extension = $photo->getClientOriginalExtension();
 
-            if ($this->mediaRepository->existsDuplicateByName($baseRelativePath . '/' . $fileName . '.' . $extension)) {
-                throw new DuplicateMediaException();
-            }
-
-            $disk = config('filesystems.default');
-            $baseStoragePath = 'users/' . $user->id . '/' . $this->sanitizeTitle($data['full_name']);
-            $fileNameWithBitrate = $fileName . '.' . $extension;
-            $relativeFilePath = $baseStoragePath . '/' . $fileNameWithBitrate;
-
-            if ($disk === 'local') {
-                $directoryPath = storage_path('app/public/' . $baseStoragePath);
-                File::ensureDirectoryExists($directoryPath, 0755, true);
-                $outputPath = $directoryPath . '/' . $fileNameWithBitrate;
-                File::put($outputPath, File::get($photo->getRealPath()));
-            } elseif ($disk === 's3') {
-                $tempPath = storage_path('app/public/' . uniqid() . '_' . $fileNameWithBitrate);
-                File::ensureDirectoryExists(dirname($tempPath), 0755, true);
-                File::put($tempPath, File::get($photo->getRealPath()));
-
-                $upload = Storage::disk($disk)->put($relativeFilePath, File::get($tempPath));
-                if ($upload === false) {
-                    throw new UploadNotSuccessfully();
+                if ($this->mediaRepository->existsDuplicateByName($baseRelativePath . '/' . $fileName . '.' . $extension)) {
+                    throw new DuplicateMediaException();
                 }
 
-                File::delete($tempPath);
-            }
+                $disk = config('filesystems.default');
+                $baseStoragePath = 'users/' . $user->id . '/' . $this->sanitizeTitle($data['full_name']);
+                $fileNameWithBitrate = $fileName . '.' . $extension;
+                $relativeFilePath = $baseStoragePath . '/' . $fileNameWithBitrate;
 
-            $this->mediaRepository->create([
-                'file_path' => $relativeFilePath,
-                'file_type' => 'photo',
-                'mime_type' => $photo->getMimeType(),
-                'model_id' => $user->id,
-                'model_type' => User::class,
-            ]);
+                if ($disk === 'local') {
+                    $directoryPath = storage_path('app/public/' . $baseStoragePath);
+                    File::ensureDirectoryExists($directoryPath, 0755, true);
+                    $outputPath = $directoryPath . '/' . $fileNameWithBitrate;
+                    File::put($outputPath, File::get($photo->getRealPath()));
+                } elseif ($disk === 's3') {
+                    $tempPath = storage_path('app/public/' . uniqid() . '_' . $fileNameWithBitrate);
+                    File::ensureDirectoryExists(dirname($tempPath), 0755, true);
+                    File::put($tempPath, File::get($photo->getRealPath()));
+
+                    $upload = Storage::disk($disk)->put($relativeFilePath, File::get($tempPath));
+                    if ($upload === false) {
+                        throw new UploadNotSuccessfully();
+                    }
+
+                    File::delete($tempPath);
+                }
+
+                $this->mediaRepository->create([
+                    'file_path' => $relativeFilePath,
+                    'file_type' => 'photo',
+                    'mime_type' => $photo->getMimeType(),
+                    'model_id' => $user->id,
+                    'model_type' => User::class,
+                ]);
+            }
 
             return $user;
         });
