@@ -62,4 +62,9 @@ class Album extends Model
     {
         return 'albums';
     }
+
+    public function songs(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Song::class, 'song_albums');
+    }
 }
