@@ -201,7 +201,12 @@ class SongService
 
     public function all(int $perPage, int $page)
     {
-        return $this->songRepository->all($perPage, $page);
+        return $this->songRepository->allPublic($perPage, $page);
+    }
+
+    public function allByUser(int $perPage, int $page)
+    {
+        return $this->songRepository->allByUser($perPage, $page);
     }
 
     public function get(string $shareToken)
