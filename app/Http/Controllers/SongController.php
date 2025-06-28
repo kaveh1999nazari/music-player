@@ -39,6 +39,19 @@ class SongController extends Controller
         ]);
     }
 
+    public function indexUser(Request $request): JsonResponse
+    {
+        $perPage = (int) $request->get('per_page', 10);
+        $page = (int) $request->get('page', 1);
+        $songs = $this->songService->allByUser($perPage, $page);
+
+        return response()->json([
+            'code' => 200,
+            'data' => $songs->items(),
+            'page' => $songs->currentPage(),
+        ]);
+    }
+
     public function get(string $shareToken): JsonResponse
     {
         $song = $this->songService->get($shareToken);
