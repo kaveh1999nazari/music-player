@@ -35,12 +35,44 @@ class SongRepository
     public function all(int $perPage, int $page): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
         return Song::query()
+            ->with(['media'])
+            ->paginate($perPage, ['*'], 'page', $page);
+    }
+
+    public function allPublic(int $perPage, int $page): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    {
+        return Song::query()
+            ->where('is_public', true)
+            ->with(['media'])
+            ->paginate($perPage, ['*'], 'page', $page);
+    }
+
+    public function allByUser(int $perPage, int $page): \Illuminate\Pagination\LengthAwarePaginator
+    {
+        return Song::query()
             ->where('created_by', auth()->id())
             ->with(['media'])
             ->paginate($perPage, ['*'], 'page', $page);
     }
 
     public function get(string $shareToken): \Illuminate\Database\Eloquent\Model|null
+    {
+        return Song::query()
+            ->where('share_token', $shareToken)
+            ->with(['media', 'album', 'artist', 'category'])
+            ->first();
+    }
+
+    public function getPublic(string $shareToken): \Illuminate\Database\Eloquent\Model|null
+    {
+        return Song::query()
+            ->where('share_token', $shareToken)
+            ->where('is_public', true)
+            ->with(['media', 'album', 'artist', 'category'])
+            ->first();
+    }
+
+    public function getByUser(string $shareToken): \Illuminate\Database\Eloquent\Model|null
     {
         return Song::query()
             ->where('created_by', auth()->id())
