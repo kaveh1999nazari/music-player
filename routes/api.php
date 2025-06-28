@@ -15,6 +15,7 @@ Route::controller(UserController::class)->group(function () {
 Route::middleware('user')->group(function () {
     Route::post('/track/create', [\App\Http\Controllers\SongController::class, 'create']);
     Route::get('/tracks', [\App\Http\Controllers\SongController::class, 'index']);
+    Route::get('/user/tracks', [\App\Http\Controllers\SongController::class, 'indexUser']);
     Route::get('/track/{shareToken}', [\App\Http\Controllers\SongController::class, 'get']);
     Route::get('/track/{shareToken}/stream/music', [\App\Http\Controllers\SongController::class, 'streamMusic']);
     Route::get('/track/{shareToken}/stream/photo', [\App\Http\Controllers\SongController::class, 'streamPhoto']);
