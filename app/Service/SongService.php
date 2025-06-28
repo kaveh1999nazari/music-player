@@ -206,10 +206,20 @@ class SongService
 
     public function get(string $shareToken)
     {
-        $song = $this->songRepository->get($shareToken);
+        $user = auth()->user();
 
-        if (!$song) {
-            throw new SongNotFoundException();
+        if ($user && $user->is_admin) {
+            $song = $this->songRepository->get($shareToken);
+        }
+
+        if (!isset($song) || !$song) {
+            if ($user) {
+                $song = $this->songRepository->getByUser($shareToken);
+            }
+        }
+
+        if (!isset($song) || !$song) {
+            $song = $this->songRepository->getPublic($shareToken);
         }
 
         return $song;
